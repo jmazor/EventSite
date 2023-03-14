@@ -7,16 +7,54 @@ import java.util.UUID;
 @Entity
 public class SuperAdmin {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    private User user;
-
-    // FIXME: Just use generated value?
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
     @GeneratedValue(strategy = GenerationType.UUID)
     private String verification = UUID.randomUUID().toString();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getVerification() {
         return verification;
@@ -24,13 +62,5 @@ public class SuperAdmin {
 
     public void setVerification(String verification) {
         this.verification = verification;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

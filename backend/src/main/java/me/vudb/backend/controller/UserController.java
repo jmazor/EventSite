@@ -1,29 +1,26 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.User;
-import me.vudb.backend.repository.UserRepository;
+import me.vudb.backend.models.Student;
+import me.vudb.backend.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
 @RequestMapping(path="/api")
 public class UserController {
     @Autowired
-    private UserRepository userRepository;
+    private StudentRepository studentRepository;
 
     @PostMapping(path="/add")
-    public ResponseEntity<?> addNewUser(@RequestBody User user) {
-        try {
-            userRepository.save(user);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid request");
-        }
+    public ResponseEntity<Student> addNewUser(@RequestBody Student student) {
+        studentRepository.save(student);
+        return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 
-    @GetMapping(path="/add")
-    public @ResponseBody Iterable<User> getAll(){
-        return userRepository.findAll();
+    @GetMapping(path="/all")
+    public @ResponseBody Iterable<Student> getAll(){
+        return studentRepository.findAll();
     }
 }

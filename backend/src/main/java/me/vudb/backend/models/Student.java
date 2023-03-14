@@ -1,12 +1,10 @@
 package me.vudb.backend.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 @Entity
-public class User {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -14,6 +12,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+
 
     public String getId() {
         return id;
@@ -54,4 +53,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
