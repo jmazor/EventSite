@@ -1,4 +1,4 @@
-package vudb.me.backend;
+package me.vudb.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
