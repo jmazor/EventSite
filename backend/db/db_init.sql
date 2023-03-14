@@ -54,7 +54,7 @@ CREATE TRIGGER validate_student_email
     FOR EACH ROW
 BEGIN
     DECLARE uni_domain VARCHAR(255);
-    SELECT email_domain INTO uni_domain FROM university WHERE id = NEW.university_id;
+    SELECT email_domain INTO uni_domain FROM university WHERE id = NEW.id;
     IF SUBSTRING((SELECT email FROM user WHERE id = NEW.id),
                  INSTR((SELECT email FROM user WHERE id = NEW.id), '@') + 1) != uni_domain THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email domain does not match university domain.';
@@ -117,7 +117,7 @@ BEGIN
     DECLARE uID CHAR(36);
     DECLARE rID CHAR(36);
 
-    SELECT university_id INTO uID FROM user WHERE id = NEW.student_id;
+    SELECT university_id INTO uID FROM student WHERE id = NEW.student_id;
     SELECT university_id INTO rID FROM rso WHERE id = NEW.rso_id;
 
     IF uID <> rID THEN

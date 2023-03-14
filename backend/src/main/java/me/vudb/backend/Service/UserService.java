@@ -8,32 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService extends AbstractService<User, String> {
 
     private final UserRepository userRepository;
+    //private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
+        super(userRepository);
         this.userRepository = userRepository;
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
-    public Optional<User> findUserById(String id) {
-        return userRepository.findById(id);
-    }
-
-    public Optional<User> findUserByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
-    }
-
-    public void deleteUserById(String id) {
-        userRepository.deleteById(id);
     }
 
 }
