@@ -1,6 +1,5 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.Student;
 import me.vudb.backend.models.SuperAdmin;
 import me.vudb.backend.models.University;
 import me.vudb.backend.repository.SuperAdminRepository;

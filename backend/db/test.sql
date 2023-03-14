@@ -31,7 +31,7 @@ CREATE TABLE university
 );
 
 -- --------------------------------------------------------
-CREATE TABLE student
+CREATE TABLE user
 (
     id        CHAR(36) PRIMARY KEY DEFAULT UUID(),
     first_name VARCHAR(255) NOT NULL,
@@ -60,17 +60,17 @@ INSERT INTO university (id, name, location, description, num_students, picture, 
 VALUES (UUID(), 'University of Central Florida', 'Orlando, FL', 'Public research university', 0, NULL,
         (SELECT id FROM super_admin), 'ucf.edu');
 
-INSERT INTO student (id, first_name, last_name, email, password, university_id)
+INSERT INTO user (id, first_name, last_name, email, password, university_id)
 VALUES (UUID(), 'John', 'Doe', 'johndoe@ucf.edu', 'password', (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
-INSERT INTO student (id, first_name, last_name, email, password, university_id)
+INSERT INTO user (id, first_name, last_name, email, password, university_id)
 VALUES (UUID(), 'Jane', 'Doe', 'janedoe@ucf.edu', 'password', (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
-INSERT INTO student (id, first_name, last_name, email, password, university_id)
+INSERT INTO user (id, first_name, last_name, email, password, university_id)
 VALUES (UUID(), 'Bob', 'Smith', 'bobsmith@ucf.edu', 'password', (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
-INSERT INTO student (id, first_name, last_name, email, password, university_id)
+INSERT INTO user (id, first_name, last_name, email, password, university_id)
 VALUES (UUID(), 'Sara', 'Lee', 'saralee@ucf.edu', 'password', (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
-INSERT INTO student (id, first_name, last_name, email, password, university_id)
+INSERT INTO user (id, first_name, last_name, email, password, university_id)
 VALUES (UUID(), 'Tom', 'Hanks', 'tomhanks@ucf.edu', 'password', (SELECT id FROM university WHERE name = 'University of Central Florida'));

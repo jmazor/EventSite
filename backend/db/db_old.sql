@@ -108,7 +108,7 @@ BEGIN
 END //
 
 
--- A RSO student must belong to the same University
+-- A RSO user must belong to the same University
 
 CREATE TRIGGER trg_rso_check_uni
     BEFORE INSERT
