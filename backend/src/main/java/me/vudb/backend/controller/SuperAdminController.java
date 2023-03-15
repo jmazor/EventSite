@@ -1,8 +1,8 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.service.SuperAdminService;
 import me.vudb.backend.models.SuperAdmin;
 import me.vudb.backend.models.User;
+import me.vudb.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path="/api/admin")
 public class SuperAdminController {
-    private final SuperAdminService superAdminService;
+    private final UserService superAdminService;
 
-    public SuperAdminController(SuperAdminService superAdminService) {
+    public SuperAdminController(UserService superAdminService) {
         this.superAdminService = superAdminService;
     }
 
@@ -28,7 +28,7 @@ public class SuperAdminController {
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<SuperAdmin> getAll(){
-        return superAdminService.findAll();
+        return superAdminService.findAllAdmin();
     }
 
     /*@PostMapping("/createUniversity")

@@ -19,7 +19,7 @@ dependencies {
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
