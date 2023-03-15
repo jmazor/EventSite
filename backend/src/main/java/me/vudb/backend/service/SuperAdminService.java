@@ -1,4 +1,4 @@
-package me.vudb.backend.Service;
+package me.vudb.backend.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import me.vudb.backend.models.SuperAdmin;
@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class SuperAdminService {
-
+public class SuperAdminService extends  AbstractService<SuperAdmin, String> {
     private final SuperAdminRepository superAdminRepository;
     private final UserService userService;
 
@@ -33,14 +32,5 @@ public class SuperAdminService {
                 .orElseThrow(() -> new EntityNotFoundException("SuperAdmin not found"));
         superAdmin.setVerification(newVerificationCode);
         return superAdminRepository.save(superAdmin);
-    }
-
-    public SuperAdmin findById(String id) {
-        return superAdminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("SuperAdmin not found"));
-    }
-
-    public List<SuperAdmin> findAll() {
-        return superAdminRepository.findAll();
     }
 }

@@ -1,9 +1,7 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.Service.UserService;
+import me.vudb.backend.service.UserService;
 import me.vudb.backend.models.User;
-import me.vudb.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +20,10 @@ public class UserController {
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
-
+    @GetMapping(path="/{email}")
+    public @ResponseBody User getUserByEmail(@PathVariable String email){
+        return userService.findByEmail(email);
+    }
     @GetMapping(path="/all")
     public @ResponseBody Iterable<User> getAll(){
         return userService.findAll();

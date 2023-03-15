@@ -36,7 +36,7 @@ CREATE TABLE university
 );
 
 -- --------------------------------------------------------
-CREATE TABLE user
+CREATE TABLE student
 (
     id           CHAR(36) NOT NULL PRIMARY KEY,
     university_id CHAR(36) NOT NULL,
@@ -308,31 +308,31 @@ VALUES (UUID(), 'University of Central Florida', 'Orlando, Florida', 'A public r
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'John', 'Doe', 'johndoe@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'johndoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Jane', 'Doe', 'janedoe@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'janedoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Bob', 'Smith', 'bobsmith@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'bobsmith@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Alice', 'Johnson', 'alicejohnson@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'alicejohnson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Tom', 'Wilson', 'tomwilson@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'tomwilson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 -- Start an RSO
