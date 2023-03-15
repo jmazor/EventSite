@@ -1,7 +1,6 @@
 package me.vudb.backend.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,7 @@ import java.util.Map;
 @Controller
 public class AuthController {
 
-
+/*
     @PostMapping("/authenticate")
     @ResponseBody
     public Map<String, Object> login(Authentication authentication) {
@@ -25,5 +24,7 @@ public class AuthController {
 
         return roleInfo;
     }
+
+ */
 }
 
