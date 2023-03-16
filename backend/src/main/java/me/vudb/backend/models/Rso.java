@@ -1,7 +1,15 @@
 package me.vudb.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import java.util.Set;
+
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 public class Rso {
 
@@ -13,13 +21,17 @@ public class Rso {
 
     private boolean approval;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "admin_id", referencedColumnName = "id", nullable = false)
     private User admin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "university_id", referencedColumnName = "id", nullable = false)
     private University university;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "rso")
+    private Set<User> users;
 
     public String getId() {
         return id;
@@ -59,5 +71,13 @@ public class Rso {
 
     public void setUniversity(University university) {
         this.university = university;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

@@ -1,5 +1,6 @@
 package me.vudb.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +13,7 @@ public class Student {
     @JoinColumn(name = "id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "university_id")
     private University university;
 

@@ -1,6 +1,7 @@
 package me.vudb.backend.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import me.vudb.backend.models.Rso;
 import me.vudb.backend.models.SuperAdmin;
 import me.vudb.backend.models.User;
 import me.vudb.backend.repository.StudentRepository;
@@ -19,12 +20,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
-
-
+    
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final SuperAdminRepository superAdminRepository;
@@ -90,4 +91,12 @@ public class UserService implements UserDetailsService {
         superAdmin.setVerification(newVerificationCode);
         return superAdminRepository.save(superAdmin);
     }
+
+
+    public Set<Rso> findUserRso(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return user.getRso();
+    }
+
 }

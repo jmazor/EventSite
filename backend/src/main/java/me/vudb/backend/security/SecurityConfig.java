@@ -28,15 +28,18 @@ public class SecurityConfig {
     public SecurityFilterChain web(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/resources/**", "/static/**", "/signup", "/about",
-                                "/api/user/**", "/login", "/authenticate",
+                                "/login", "/authenticate",
                                 "/api/auth/**", "/api/admin/signup").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/user/test").authenticated()
+                        .requestMatchers("/api/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors().and()
                 .csrf().disable();
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
