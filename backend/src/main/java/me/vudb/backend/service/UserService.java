@@ -8,6 +8,7 @@ import me.vudb.backend.repository.StudentRepository;
 import me.vudb.backend.repository.SuperAdminRepository;
 import me.vudb.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
     
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
@@ -33,7 +34,7 @@ public class UserService implements UserDetailsService {
     public UserService(UserRepository userRepository,
                        StudentRepository studentRepository,
                        SuperAdminRepository superAdminRepository,
-                       PasswordEncoder passwordEncoder) {
+                       @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.superAdminRepository = superAdminRepository;
@@ -42,25 +43,6 @@ public class UserService implements UserDetailsService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            System.out.println("null");
-        }
-        System.out.println(user.getId());
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (superAdminRepository.existsById(user.getId())) {
-            System.out.println("Super Admin");
-            authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
-        } else//(studentRepository.existsById(user.getId()))
-            authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
-
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(), authorities);
     }
 
     public User save(User user) {
