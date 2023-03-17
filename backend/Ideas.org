@@ -1,0 +1,58 @@
+* Example Websites
+https://events.ucf.edu/
+https://knightconnect.campuslabs.com/engage/events
+* Project Structure
+Possible project structure for the project
+backend/
+    └── src
+        └── main
+            └── java
+                └── me
+                    └── vudb
+                        └── backend
+                            └── user
+                                ├── controller
+                                │   ├── AuthController.java
+                                │   ├── UserController.java
+                                ├── dto
+                                │   ├── JwtResponse.java
+                                │   ├── LoginRequest.java
+                                ├── model
+                                │   ├── Student.java
+                                │   ├── SuperAdmin.java
+                                │   ├── User.java
+                                ├── repository
+                                │   ├── StudentRepository.java
+                                │   ├── SuperAdminRepository.java
+                                │   ├── UserRepository.java
+                                └── service
+                                    ├── StudentService.java
+                                    ├── SuperAdminService.java
+                                    ├── UserService.java
+backend/
+    └── src
+        └── main
+            └── java
+                └── me
+                    └── vudb
+                        └── backend
+                            ├── event
+                            │   ├── controller
+                            │   ├── model
+                            │   ├── repository
+                            │   └── service
+                            ├── rso
+                            │   ├── controller
+                            │   ├── model
+                            │   ├── repository
+                            │   └── service
+                            ├── user
+                            │   ├── controller
+                            │   ├── model
+                            │   ├── repository
+                            │   └── service
+                            └── university
+                                ├── controller
+                                ├── model
+                                ├── repository
+                                └── service

@@ -1,4 +1,4 @@
-package me.vudb.backend.Service;
+package me.vudb.backend.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,9 @@ public abstract class AbstractService<T, ID> {
         return repository.findById(id);
     }
 
+    public boolean existsById(ID id) {
+        return repository.existsById(id);
+    }
     public void deleteById(ID id) {
         repository.deleteById(id);
     }

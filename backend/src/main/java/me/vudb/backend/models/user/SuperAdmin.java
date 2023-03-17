@@ -1,9 +1,4 @@
-package me.vudb.backend.models;
-
-import jakarta.persistence.*;
-
-import java.util.UUID;
-
+package me.vudb.backend.models.user;
 
 import jakarta.persistence.*;
 

@@ -1,13 +1,8 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.Service.SuperAdminService;
-import me.vudb.backend.models.SuperAdmin;
-import me.vudb.backend.models.University;
-import me.vudb.backend.models.User;
-import me.vudb.backend.repository.SuperAdminRepository;
-import me.vudb.backend.repository.UniversityRepository;
-import me.vudb.backend.util.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.models.user.User;
+import me.vudb.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path="/api/admin")
 public class SuperAdminController {
-    @Autowired
-    private SuperAdminService superAdminService;
+    private final UserService superAdminService;
+
+    public SuperAdminController(UserService superAdminService) {
+        this.superAdminService = superAdminService;
+    }
 
     @PostMapping("/signup")
     @Transactional
@@ -30,7 +28,7 @@ public class SuperAdminController {
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<SuperAdmin> getAll(){
-        return superAdminService.findAll();
+        return superAdminService.findAllAdmin();
     }
 
     /*@PostMapping("/createUniversity")

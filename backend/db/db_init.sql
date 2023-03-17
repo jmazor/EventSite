@@ -36,7 +36,7 @@ CREATE TABLE university
 );
 
 -- --------------------------------------------------------
-CREATE TABLE user
+CREATE TABLE student
 (
     id           CHAR(36) NOT NULL PRIMARY KEY,
     university_id CHAR(36) NOT NULL,
@@ -169,7 +169,6 @@ DELIMITER ;
 CREATE TABLE event
 (
     id           CHAR(36) PRIMARY KEY DEFAULT UUID(),
-    user_id       CHAR(36)                                                                                                                                                                                          NOT NULL,
     name         VARCHAR(255)                                                                                                                                                                                      NOT NULL,
     category     ENUM ('academic', 'arts', 'career', 'performance', 'entertainment', 'health', 'holiday', 'meeting', 'forum', 'recreation', 'service', 'social', 'speaker', 'sports', 'tour', 'other', 'workshop') NOT NULL,
     description  TEXT                                                                                                                                                                                              NOT NULL,
@@ -179,8 +178,7 @@ CREATE TABLE event
     location_url  VARCHAR(255),
     phone        VARCHAR(255),
     email        VARCHAR(255),
-    approval     BOOL                 DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    approval     BOOL                 DEFAULT FALSE
 );
 
 -- TODO: Trigger RSO event ensure ID is RSO and approval is True
@@ -308,31 +306,31 @@ VALUES (UUID(), 'University of Central Florida', 'Orlando, Florida', 'A public r
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'John', 'Doe', 'johndoe@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'johndoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Jane', 'Doe', 'janedoe@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'janedoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Bob', 'Smith', 'bobsmith@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'bobsmith@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Alice', 'Johnson', 'alicejohnson@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'alicejohnson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 INSERT INTO user (id, first_name, last_name, email, password)
 VALUES (UUID(), 'Tom', 'Wilson', 'tomwilson@ucf.edu', 'password');
 
-INSERT INTO user (id, university_id)
+INSERT INTO student (id, university_id)
 VALUES ((SELECT id FROM user WHERE email = 'tomwilson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
 
 -- Start an RSO

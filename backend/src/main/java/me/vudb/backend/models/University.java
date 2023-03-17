@@ -1,6 +1,7 @@
 package me.vudb.backend.models;
 
 import jakarta.persistence.*;
+import me.vudb.backend.models.user.SuperAdmin;
 
 @Entity
 public class University {
@@ -21,7 +22,7 @@ public class University {
     private String emailDomain;
 
     // TODO: do I want this to be lazy?
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "admin_id", nullable = false)
     private SuperAdmin admin;
 
