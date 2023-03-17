@@ -169,7 +169,6 @@ DELIMITER ;
 CREATE TABLE event
 (
     id           CHAR(36) PRIMARY KEY DEFAULT UUID(),
-    user_id       CHAR(36)                                                                                                                                                                                          NOT NULL,
     name         VARCHAR(255)                                                                                                                                                                                      NOT NULL,
     category     ENUM ('academic', 'arts', 'career', 'performance', 'entertainment', 'health', 'holiday', 'meeting', 'forum', 'recreation', 'service', 'social', 'speaker', 'sports', 'tour', 'other', 'workshop') NOT NULL,
     description  TEXT                                                                                                                                                                                              NOT NULL,
@@ -179,8 +178,7 @@ CREATE TABLE event
     location_url  VARCHAR(255),
     phone        VARCHAR(255),
     email        VARCHAR(255),
-    approval     BOOL                 DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    approval     BOOL                 DEFAULT FALSE
 );
 
 -- TODO: Trigger RSO event ensure ID is RSO and approval is True

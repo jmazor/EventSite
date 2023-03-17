@@ -1,7 +1,7 @@
 package me.vudb.backend.service;
 import jakarta.persistence.EntityNotFoundException;
 import me.vudb.backend.models.Rso;
-import me.vudb.backend.models.User;
+import me.vudb.backend.models.user.User;
 import me.vudb.backend.repository.RsoRepository;
 import org.springframework.stereotype.Service;
 

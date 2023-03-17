@@ -1,6 +1,6 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.User;
+import me.vudb.backend.models.user.User;
 import me.vudb.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

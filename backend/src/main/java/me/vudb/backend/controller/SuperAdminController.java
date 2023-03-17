@@ -1,7 +1,7 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.SuperAdmin;
-import me.vudb.backend.models.User;
+import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.models.user.User;
 import me.vudb.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

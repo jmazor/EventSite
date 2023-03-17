@@ -1,8 +1,7 @@
 package me.vudb.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import me.vudb.backend.models.user.SuperAdmin;
 
 @Entity
 public class University {

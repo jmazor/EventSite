@@ -2,19 +2,17 @@ package me.vudb.backend.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import me.vudb.backend.models.Rso;
-import me.vudb.backend.models.SuperAdmin;
-import me.vudb.backend.models.User;
+import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.models.user.User;
 import me.vudb.backend.repository.StudentRepository;
 import me.vudb.backend.repository.SuperAdminRepository;
 import me.vudb.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
