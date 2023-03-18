@@ -1,15 +1,12 @@
-package me.vudb.backend.security;
+package me.vudb.backend.controller;
 
-
-import me.vudb.backend.service.UserService;
+import me.vudb.backend.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
-
 @RestController
-@CrossOrigin
-public class JwtAuthenticationController {
+public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;

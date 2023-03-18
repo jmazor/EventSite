@@ -65,6 +65,10 @@ public class UserService {
         return superAdminRepository.save(superAdmin);
     }
 
+    public SuperAdmin findSuperAdminByUserId(String email) {
+        return superAdminRepository.findByUserEmail(email);
+    }
+
     public SuperAdmin setVerificationCode(String superAdminId, String newVerificationCode) {
         SuperAdmin superAdmin = superAdminRepository.findById(superAdminId)
                 .orElseThrow(() -> new EntityNotFoundException("SuperAdmin not found"));

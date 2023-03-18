@@ -2,6 +2,7 @@ package me.vudb.backend.models;
 
 import jakarta.persistence.*;
 import me.vudb.backend.models.user.User;
+import me.vudb.backend.university.University;
 
 @Entity
 public class Student {

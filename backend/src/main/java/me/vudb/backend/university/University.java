@@ -1,4 +1,4 @@
-package me.vudb.backend.models;
+package me.vudb.backend.university;
 
 import jakarta.persistence.*;
 import me.vudb.backend.models.user.SuperAdmin;

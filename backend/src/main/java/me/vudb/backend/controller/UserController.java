@@ -4,8 +4,10 @@ import me.vudb.backend.models.Rso;
 import me.vudb.backend.service.RsoService;
 import me.vudb.backend.service.UserService;
 import me.vudb.backend.models.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +20,13 @@ import java.util.Set;
 public class UserController {
     private final UserService userService;
     private final RsoService rsoService;
+
     public UserController(UserService userService, RsoService rsoService) {
         this.userService = userService;
         this.rsoService = rsoService;
     }
 
-    @PostMapping(path="/add")
+    @PostMapping(path="/register")
     public ResponseEntity<User> addNewUser(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);

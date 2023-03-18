@@ -13,6 +13,7 @@ CREATE TABLE user
     email     VARCHAR(255) NOT NULL UNIQUE,
     password  VARCHAR(255) NOT NULL
 );
+CREATE INDEX idx_user_email ON user (email);
 
 CREATE TABLE super_admin
 (

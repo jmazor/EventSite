@@ -1,9 +1,10 @@
-package me.vudb.backend.repository;
+package me.vudb.backend.university;
 
 import me.vudb.backend.models.user.SuperAdmin;
-import me.vudb.backend.models.University;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UniversityRepository extends JpaRepository<University, String> {
         University findByAdmin(SuperAdmin admin);
 }
