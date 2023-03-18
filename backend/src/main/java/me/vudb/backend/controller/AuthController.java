@@ -27,7 +27,7 @@ public class AuthController {
     private CustomUserDetailsService customUserDetailsService;
 
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
             throws Exception {
 
