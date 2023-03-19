@@ -63,9 +63,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/login", "/api/admin/register", "/api/user/register").permitAll() // Add this line
+                        .requestMatchers("/api/login", "/api/admin/register",
+                                "/api/user/register", "/api/rso/all").permitAll() // Add this line
                         .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
+                        .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling()

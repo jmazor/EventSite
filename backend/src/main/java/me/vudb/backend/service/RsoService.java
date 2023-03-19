@@ -17,4 +17,5 @@ public class RsoService extends AbstractService<Rso, String>{
                 .orElseThrow(() -> new EntityNotFoundException("RSO not found"));
         return rso.getUsers();
     }
+
 }
