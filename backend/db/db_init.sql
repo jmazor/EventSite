@@ -13,6 +13,7 @@ CREATE TABLE user
     email     VARCHAR(255) NOT NULL UNIQUE,
     password  VARCHAR(255) NOT NULL
 );
+CREATE INDEX idx_user_email ON user (email);
 
 CREATE TABLE super_admin
 (
@@ -177,8 +178,7 @@ CREATE TABLE event
     location_name VARCHAR(255)                                                                                                                                                                                      NOT NULL,
     location_url  VARCHAR(255),
     phone        VARCHAR(255),
-    email        VARCHAR(255),
-    approval     BOOL                 DEFAULT FALSE
+    email        VARCHAR(255)
 );
 
 -- TODO: Trigger RSO event ensure ID is RSO and approval is True
@@ -188,26 +188,27 @@ CREATE TABLE event
 CREATE TABLE public_event
 (
     admin_id    CHAR(36) NOT NULL,
-    event_id    CHAR(36) NOT NULL PRIMARY KEY,
-    visibility BOOL     NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (admin_id) references super_admin (id)
+    id    CHAR(36) NOT NULL PRIMARY KEY,
+    approval     BOOL                 DEFAULT FALSE,
+    FOREIGN KEY (admin_id) references super_admin (id),
+    FOREIGN KEY (id) REFERENCES event (id)
 );
 
 -- TODO: Trigger to ensure userID is a SuperAdmin
 
-CREATE TABLE university_event
+CREATE TABLE private_event
 (
     university_id CHAR(36) NOT NULL,
-    event_id      CHAR(36) NOT NULL PRIMARY KEY,
+    id      CHAR(36) NOT NULL PRIMARY KEY,
     FOREIGN KEY (university_id) REFERENCES university (id),
-    FOREIGN KEY (event_id) REFERENCES event (id)
+    FOREIGN KEY (id) REFERENCES event (id)
 );
 
 CREATE TABLE rso_event
 (
     rso_id CHAR(36) NOT NULL,
-    event_id      CHAR(36) NOT NULL PRIMARY KEY,
-    FOREIGN KEY (event_id) REFERENCES event (id),
+    id      CHAR(36) NOT NULL PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES event (id),
     FOREIGN KEY (rso_id) REFERENCES rso (id)
 );
 
@@ -215,11 +216,11 @@ CREATE TABLE rso_event
 CREATE TABLE event_users
 (
     user_id  CHAR(36) NOT NULL,
-    event_id CHAR(36) NOT NULL,
+    id CHAR(36) NOT NULL,
     rating  INT,
     FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (event_id) REFERENCES event (id),
-    PRIMARY KEY (user_id, event_id)
+    FOREIGN KEY (id) REFERENCES event (id),
+    PRIMARY KEY (user_id, id)
 );
 
 /*
@@ -285,82 +286,4 @@ BEGIN
 END //
 
 DELIMITER ;
-
--- --------------------------------------------------------
---                                                       --
---              Create Data for Testing                  --
---                                                       --
--- --------------------------------------------------------
--- Create a super_admin user
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'Super', 'Admin', 'superadmin@ucf.edu', 'password');
-
-INSERT INTO super_admin (verification, id)
-VALUES (UUID(), (SELECT id FROM user WHERE email = 'superadmin@ucf.edu'));
-
--- Create the UCF university and associate it with the super_admin
-INSERT INTO university (id, name, location, description, num_students, picture, admin_id, email_domain)
-VALUES (UUID(), 'University of Central Florida', 'Orlando, Florida', 'A public research university with over 69,000 students', 69000, 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/University_of_Central_Florida_seal.svg/1200px-University_of_Central_Florida_seal.svg.png', (SELECT id FROM super_admin), 'ucf.edu');
-
--- Insert five initial students
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'John', 'Doe', 'johndoe@ucf.edu', 'password');
-
-INSERT INTO student (id, university_id)
-VALUES ((SELECT id FROM user WHERE email = 'johndoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
-
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'Jane', 'Doe', 'janedoe@ucf.edu', 'password');
-
-INSERT INTO student (id, university_id)
-VALUES ((SELECT id FROM user WHERE email = 'janedoe@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
-
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'Bob', 'Smith', 'bobsmith@ucf.edu', 'password');
-
-INSERT INTO student (id, university_id)
-VALUES ((SELECT id FROM user WHERE email = 'bobsmith@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
-
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'Alice', 'Johnson', 'alicejohnson@ucf.edu', 'password');
-
-INSERT INTO student (id, university_id)
-VALUES ((SELECT id FROM user WHERE email = 'alicejohnson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
-
-INSERT INTO user (id, first_name, last_name, email, password)
-VALUES (UUID(), 'Tom', 'Wilson', 'tomwilson@ucf.edu', 'password');
-
-INSERT INTO student (id, university_id)
-VALUES ((SELECT id FROM user WHERE email = 'tomwilson@ucf.edu'), (SELECT id FROM university WHERE name = 'University of Central Florida'));
-
--- Start an RSO
-INSERT INTO rso (id, admin_id, name, university_id, approval)
-VALUES (UUID(), (SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'bobsmith@ucf.edu')), 'Chess Club', (SELECT id FROM university WHERE name = 'University of Central Florida'), 0);
-
--- Have the other two students join the RSO
-INSERT INTO rso_users (student_id, rso_id)
-VALUES ((SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'alicejohnson@ucf.edu')), (SELECT id FROM rso WHERE name = 'Chess Club'));
-
-INSERT INTO rso_users (student_id, rso_id)
-VALUES ((SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'tomwilson@ucf.edu')), (SELECT id FROM rso WHERE name = 'Chess Club'));
-
-INSERT INTO rso_users (student_id, rso_id)
-VALUES ((SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'janedoe@ucf.edu')), (SELECT id FROM rso WHERE name = 'Chess Club'));
--- Create an RSO event
-INSERT INTO event (id, user_id, name, category, description, start_date, end_date, location_name, location_url, phone, email, approval)
-VALUES (UUID(), (SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'bobsmith@ucf.edu')), 'Chess Tournament', 'recreation', 'Join us for a friendly chess tournament!', '2023-03-20 14:00:00', '2023-03-20 17:00:00', 'UCF Student Union', 'https://www.ucf.edu/about-ucf/map/', '555-555-5555', 'info@ucf.edu', 0);
-
--- Add the event to the RSO
-INSERT INTO rso_event (rso_id, event_id)
-VALUES ((SELECT id FROM rso WHERE name = 'Chess Club'), (SELECT id FROM event WHERE name = 'Chess Tournament'));
-
-
--- Add users to the RSO event
-INSERT INTO event_users (user_id, event_id, rating)
-VALUES ((SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'alicejohnson@ucf.edu')), (SELECT id FROM event WHERE name = 'Chess Tournament'), 5);
-
-INSERT INTO event_users (user_id, event_id, rating)
-VALUES ((SELECT id FROM user WHERE id = (SELECT id FROM user WHERE email = 'tomwilson@ucf.edu')), (SELECT id FROM event WHERE name = 'Chess Tournament'), 4);
-
-
 

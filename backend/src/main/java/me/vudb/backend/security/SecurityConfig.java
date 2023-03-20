@@ -1,19 +1,14 @@
 package me.vudb.backend.security;
 
-import me.vudb.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,7 +18,6 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -63,14 +57,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/authenticate").permitAll() // Add this line
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
+                        .requestMatchers("/api/login", "/api/admin/register",
+                                "/api/user/register", "/api/rso/all").permitAll() // Add this line
+                        .requestMatchers("/api/admin/**", "/api/user/events").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .csrf().disable();

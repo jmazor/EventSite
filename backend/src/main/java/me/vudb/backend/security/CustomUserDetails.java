@@ -1,6 +1,6 @@
 package me.vudb.backend.security;
 
-import me.vudb.backend.models.user.User;
+import me.vudb.backend.user.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;

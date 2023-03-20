@@ -1,10 +1,15 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.user.SuperAdmin;
-import me.vudb.backend.models.user.User;
-import me.vudb.backend.service.UserService;
+import me.vudb.backend.university.University;
+import me.vudb.backend.user.models.SuperAdmin;
+import me.vudb.backend.user.models.User;
+import me.vudb.backend.security.JwtTokenUtil;
+import me.vudb.backend.user.UserService;
+import me.vudb.backend.university.UniversityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,16 +18,20 @@ import org.springframework.web.bind.annotation.*;
 public class SuperAdminController {
     private final UserService superAdminService;
 
-    public SuperAdminController(UserService superAdminService) {
+    private final UniversityService universityService;
+    private final JwtTokenUtil jwtTokenUtil;
+
+
+    public SuperAdminController(UserService superAdminService, UniversityService universityService) {
         this.superAdminService = superAdminService;
+        this.jwtTokenUtil = new JwtTokenUtil();
+        this.universityService = universityService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     @Transactional
     public ResponseEntity<?> createSuperAdmin(@RequestBody User user) {
-        // Persist the SuperAdmin entity to the database
         SuperAdmin savedSuperAdmin = superAdminService.createSuperAdmin(user);
-
         return new ResponseEntity<>(savedSuperAdmin, HttpStatus.CREATED);
     }
 
@@ -31,17 +40,13 @@ public class SuperAdminController {
         return superAdminService.findAllAdmin();
     }
 
-    /*@PostMapping("/createUniversity")
-    public ResponseEntity<?> createUniversity(@RequestBody University university, @RequestHeader(value="Authorization") String authorizationHeader) {
-        // Persist the University entity to the database
-        String token = authorizationHeader.substring("Bearer ".length());
-        String id = JwtUtils.getAdminId(token);
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-        // university.setAdmin(superAdminService.findById(id));
-        // University savedUniversity = SuperAdminService.save(university);
+    @PostMapping("/createUniversity")
+    public ResponseEntity<?> createUniversity(@RequestBody University university) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        university.setAdmin(superAdminService.findSuperAdminByUserId(username));
+        University savedUniversity = universityService.save(university);
         return new ResponseEntity<>(savedUniversity, HttpStatus.CREATED);
-    }*/
+    }
 
 }
