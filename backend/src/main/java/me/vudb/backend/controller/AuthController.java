@@ -31,18 +31,15 @@ public class AuthController {
     public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
             throws Exception {
 
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-
-        System.out.println("We made it past this point");
+        try {
+            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        } catch (Exception e) {
+           return ResponseEntity.badRequest().body("Invalid username or password");
+        }
 
         final CustomUserDetails userDetails = customUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
-
-        System.out.println("User details" + userDetails.getPassword());
-
         final String token = jwtTokenUtil.generateToken(userDetails);
-        System.out.println(token);
-
         return ResponseEntity.ok(new JwtResponse(token));
     }
 

@@ -22,7 +22,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
         logger.severe("JwtAuthenticationEntryPoint triggered for request: " + request.getRequestURI());
         logger.severe("Exception message: " + authException.getMessage());
 
-        int errorCode = 1001; // Your custom error code
+        int errorCode = 401; // Your custom error code
         String errorMessage = authException.getMessage();
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
