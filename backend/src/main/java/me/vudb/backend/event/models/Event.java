@@ -36,8 +36,6 @@ public class Event {
 
     private String email;
 
-    private Boolean approval;
-
     public enum Category {
         ACADEMIC, ARTS, CAREER, PERFORMANCE, ENTERTAINMENT, HEALTH, HOLIDAY, MEETING, FORUM, RECREATION, SERVICE, SOCIAL, SPEAKER, SPORTS, TOUR, OTHER, WORKSHOP
     }
@@ -126,11 +124,4 @@ public class Event {
         this.email = email;
     }
 
-    public Boolean getApproval() {
-        return approval;
-    }
-
-    public void setApproval(Boolean approval) {
-        this.approval = approval;
-    }
 }

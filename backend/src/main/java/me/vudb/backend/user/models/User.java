@@ -31,7 +31,7 @@ public class User {
     @JoinTable(
             name = "event_users",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
+            inverseJoinColumns = @JoinColumn(name = "id")
     )
     private Set<Event> events = new HashSet<>();
     public String getId() {
@@ -80,5 +80,13 @@ public class User {
 
     public void setRso(Set<Rso> rso) {
         this.rso = rso;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 }
