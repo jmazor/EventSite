@@ -3,7 +3,13 @@ plugins {
     war
     id("org.springframework.boot") version "3.0.4"
     id("io.spring.dependency-management") version "1.1.0"
+    application
 }
+
+configure<JavaApplication> {
+    mainClass.set("me.vudb.backend.BackendApplication")
+}
+
 
 group = "me.vudb"
 version = "0.0.1-SNAPSHOT"
@@ -21,7 +27,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
