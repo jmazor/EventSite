@@ -1,7 +1,7 @@
 package me.vudb.backend.university;
 
 import jakarta.persistence.*;
-import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.user.models.SuperAdmin;
 
 @Entity
 public class University {

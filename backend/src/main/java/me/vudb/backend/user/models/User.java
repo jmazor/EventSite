@@ -1,10 +1,10 @@
-package me.vudb.backend.models.user;
+package me.vudb.backend.user.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import me.vudb.backend.models.Rso;
-import me.vudb.backend.models.event.Event;
+import me.vudb.backend.rso.Rso;
+import me.vudb.backend.event.models.Event;
 
 import java.util.HashSet;
 import java.util.Set;

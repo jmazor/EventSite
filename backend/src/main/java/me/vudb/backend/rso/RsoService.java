@@ -1,13 +1,12 @@
-package me.vudb.backend.service;
+package me.vudb.backend.rso;
 import jakarta.persistence.EntityNotFoundException;
-import me.vudb.backend.models.Rso;
-import me.vudb.backend.models.user.User;
-import me.vudb.backend.repository.RsoRepository;
+import me.vudb.backend.AbstractService;
+import me.vudb.backend.user.models.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 @Service
-public class RsoService extends AbstractService<Rso, String>{
+public class RsoService extends AbstractService<Rso, String> {
     private final RsoRepository rsoRepository;
     public RsoService(RsoRepository rsoRepository) {
         this.rsoRepository = rsoRepository;

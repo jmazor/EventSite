@@ -1,6 +1,5 @@
 package me.vudb.backend.university;
 
-import me.vudb.backend.service.AbstractService;
 import org.springframework.stereotype.Service;
 
 @Service

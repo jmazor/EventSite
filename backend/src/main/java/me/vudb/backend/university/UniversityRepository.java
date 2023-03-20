@@ -1,6 +1,6 @@
 package me.vudb.backend.university;
 
-import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.user.models.SuperAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

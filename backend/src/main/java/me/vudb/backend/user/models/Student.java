@@ -1,7 +1,7 @@
-package me.vudb.backend.models;
+package me.vudb.backend.user.models;
 
 import jakarta.persistence.*;
-import me.vudb.backend.models.user.User;
+import me.vudb.backend.user.models.User;
 import me.vudb.backend.university.University;
 
 @Entity

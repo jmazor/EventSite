@@ -1,9 +1,9 @@
-package me.vudb.backend.models;
+package me.vudb.backend.comment;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import me.vudb.backend.models.event.Event;
-import me.vudb.backend.models.user.User;
+import me.vudb.backend.event.models.Event;
+import me.vudb.backend.user.models.User;
 
 @Entity
 public class Comment {

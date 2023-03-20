@@ -1,4 +1,4 @@
-package me.vudb.backend.models.user;
+package me.vudb.backend.user.models;
 
 import jakarta.persistence.*;
 

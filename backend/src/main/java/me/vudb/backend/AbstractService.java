@@ -1,4 +1,4 @@
-package me.vudb.backend.service;
+package me.vudb.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;

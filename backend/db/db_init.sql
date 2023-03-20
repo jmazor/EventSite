@@ -178,8 +178,7 @@ CREATE TABLE event
     location_name VARCHAR(255)                                                                                                                                                                                      NOT NULL,
     location_url  VARCHAR(255),
     phone        VARCHAR(255),
-    email        VARCHAR(255),
-    approval     BOOL                 DEFAULT FALSE
+    email        VARCHAR(255)
 );
 
 -- TODO: Trigger RSO event ensure ID is RSO and approval is True
@@ -191,6 +190,7 @@ CREATE TABLE public_event
     admin_id    CHAR(36) NOT NULL,
     event_id    CHAR(36) NOT NULL PRIMARY KEY,
     visibility BOOL     NOT NULL DEFAULT FALSE,
+    approval     BOOL                 DEFAULT FALSE,
     FOREIGN KEY (admin_id) references super_admin (id)
 );
 

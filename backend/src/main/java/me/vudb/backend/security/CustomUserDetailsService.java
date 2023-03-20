@@ -1,14 +1,13 @@
 package me.vudb.backend.security;
 
-import me.vudb.backend.models.user.User;
-import me.vudb.backend.repository.AdminRepository;
-import me.vudb.backend.repository.StudentRepository;
-import me.vudb.backend.repository.SuperAdminRepository;
-import me.vudb.backend.repository.UserRepository;
+import me.vudb.backend.user.models.User;
+import me.vudb.backend.user.repository.AdminRepository;
+import me.vudb.backend.user.repository.StudentRepository;
+import me.vudb.backend.user.repository.SuperAdminRepository;
+import me.vudb.backend.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

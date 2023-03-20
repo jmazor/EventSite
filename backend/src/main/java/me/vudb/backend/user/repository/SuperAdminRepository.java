@@ -1,6 +1,6 @@
-package me.vudb.backend.repository;
+package me.vudb.backend.user.repository;
 
-import me.vudb.backend.models.user.SuperAdmin;
+import me.vudb.backend.user.models.SuperAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SuperAdminRepository extends JpaRepository<SuperAdmin, String> {

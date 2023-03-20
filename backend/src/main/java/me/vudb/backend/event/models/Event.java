@@ -1,10 +1,10 @@
-package me.vudb.backend.models.event;
+package me.vudb.backend.event.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
-import me.vudb.backend.models.user.User;
+import me.vudb.backend.user.models.User;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

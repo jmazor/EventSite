@@ -1,13 +1,11 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.models.Rso;
-import me.vudb.backend.service.RsoService;
-import me.vudb.backend.service.UserService;
-import me.vudb.backend.models.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.vudb.backend.rso.Rso;
+import me.vudb.backend.rso.RsoService;
+import me.vudb.backend.user.UserService;
+import me.vudb.backend.user.models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;

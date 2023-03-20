@@ -1,10 +1,10 @@
-package me.vudb.backend.models;
+package me.vudb.backend.rso;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import me.vudb.backend.models.user.User;
+import me.vudb.backend.user.models.User;
 import me.vudb.backend.university.University;
 
 import java.util.Set;
