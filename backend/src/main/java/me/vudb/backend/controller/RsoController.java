@@ -2,7 +2,11 @@ package me.vudb.backend.controller;
 
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.rso.RsoService;
+import me.vudb.backend.security.JwtTokenUtil;
+import me.vudb.backend.university.University;
 import me.vudb.backend.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class RsoController {
     private final RsoService rsoService;
     private final UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
     public RsoController(RsoService rsoService, UserService userService) {
         this.rsoService = rsoService;
         this.userService = userService;
@@ -31,6 +41,10 @@ public class RsoController {
 
     @GetMapping("/all")
     public @ResponseBody Iterable<Rso> getAll() {
-        return rsoService.findAll();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        University university = userService.findStudentUniversityByEmail(username);
+
+        return rsoService.findByUniversity(university);
     }
 }

@@ -3,7 +3,10 @@ package me.vudb.backend.controller;
 import me.vudb.backend.event.models.Event;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.rso.RsoService;
+import me.vudb.backend.university.University;
+import me.vudb.backend.university.UniversityService;
 import me.vudb.backend.user.UserService;
+import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +26,17 @@ public class UserController {
     private final UserService userService;
     private final RsoService rsoService;
 
-    public UserController(UserService userService, RsoService rsoService) {
+    private final UniversityService universityService;
+    public UserController(UserService userService, RsoService rsoService, UniversityService universityService) {
         this.userService = userService;
         this.rsoService = rsoService;
+        this.universityService = universityService;
     }
 
     @PostMapping(path="/register")
-    public ResponseEntity<User> addNewUser(@RequestBody User user) {
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<Student> addNewStudent(@RequestBody Student student) {
+        student = userService.createStudent(student.getUser(), universityService.findUniversityById(student.getUniversity().getId()));
+        return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
     @GetMapping(path="/{email}")
     public @ResponseBody User getUserByEmail(@PathVariable String email){
@@ -42,12 +47,6 @@ public class UserController {
         return userService.findAll();
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> testEndpoint(Authentication authentication) {
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String role = authorities.stream().findFirst().orElseThrow().getAuthority();
-        return ResponseEntity.ok().body("{\"message\": \"Role: " + role + "\"}");
-    }
 
     @GetMapping("/rso/{userId}")
     public ResponseEntity<Set<Rso>> getRsoForUser(@PathVariable String userId) {

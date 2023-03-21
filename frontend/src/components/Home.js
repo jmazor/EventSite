@@ -1,52 +1,46 @@
 import React, { useState, useEffect } from "react";
-
-const url = "http://localhost:8080";
+import config from "../Config";
 
 const HomePage = () => {
-    const [users, setUsers] = useState([]);
-    const url = "http://localhost:8080";
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await fetch(`${url}/api/user/all`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const data = await response.json();
-          setUsers(data);
-        } catch (error) {
-          console.error("Protected resource error:", error);
-          // Handle the protected resource error here
-        }
-      };
-  
-      fetchData();
-    }, [url]);
+  const [rsoData, setRsoData] = useState([]);
+  const [eventData, setEventData] = useState([]);
+  const url = config.url;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const rsoResponse = await fetch(`${url}/api/rso/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const rsoJson = await rsoResponse.json();
+        setRsoData(rsoJson);
+
+        const eventResponse = await fetch(`${url}/api/event/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const eventJson = await eventResponse.json();
+        setEventData(eventJson);
+      } catch (error) {
+        console.error("Protected resource error:", error);
+        // Handle the protected resource error here
+      }
+    };
+
+    fetchData();
+  }, [url]);
 
   return (
     <div>
-      <h1>All Users</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Username</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.username}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h1>All RSO Data</h1>
+      <pre>{JSON.stringify(rsoData, null, 2)}</pre>
+      <h1>All Event Data</h1>
+      <pre>{JSON.stringify(eventData, null, 2)}</pre>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 package me.vudb.backend.university;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import me.vudb.backend.user.models.SuperAdmin;
 
@@ -22,6 +23,7 @@ public class University {
     private String emailDomain;
 
     // TODO: do I want this to be lazy?
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "admin_id", nullable = false)
     private SuperAdmin admin;

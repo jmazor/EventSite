@@ -1,18 +1,23 @@
 package me.vudb.backend.controller;
 
 import me.vudb.backend.security.*;
+import org.hibernate.sql.ast.tree.expression.Collation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class AuthController {
@@ -34,13 +39,17 @@ public class AuthController {
         try {
             authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         } catch (Exception e) {
-           return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body("Invalid username or password");
         }
 
         final CustomUserDetails userDetails = customUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        final Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        final List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new JwtResponse(token, roles));
     }
 
     private void authenticate(String username, String password) throws Exception {

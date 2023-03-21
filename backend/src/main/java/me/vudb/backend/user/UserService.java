@@ -2,6 +2,8 @@ package me.vudb.backend.user;
 
 import jakarta.persistence.EntityNotFoundException;
 import me.vudb.backend.rso.Rso;
+import me.vudb.backend.university.University;
+import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.SuperAdmin;
 import me.vudb.backend.user.models.User;
 import me.vudb.backend.user.repository.StudentRepository;
@@ -77,4 +79,15 @@ public class UserService {
         return user.getRso();
     }
 
+    public Student createStudent(User user, University university) {
+        User savedUser = save(user);
+        Student student = new Student();
+        student.setUser(savedUser);
+        student.setUniversity(university);
+        return studentRepository.save(student);
+    }
+
+    public University findStudentUniversityByEmail(String username) {
+        return studentRepository.findByUserEmail(username).getUniversity();
+    }
 }
