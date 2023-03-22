@@ -6,6 +6,14 @@ plugins {
     application
 }
 
+tasks.register<Exec>("buildAndRunDocker") {
+    dependsOn("bootBuildImage")
+    commandLine("docker", "run", "--net=host", "backend:${version}")
+}
+
+
+
+
 configure<JavaApplication> {
     mainClass.set("me.vudb.backend.BackendApplication")
 }

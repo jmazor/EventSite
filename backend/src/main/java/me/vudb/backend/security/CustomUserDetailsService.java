@@ -42,7 +42,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
         }
 
-        // Check if the user is a STUDENT
         if (studentRepository.findById(user.getId()).isPresent()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
         }

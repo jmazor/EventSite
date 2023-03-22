@@ -23,10 +23,12 @@ public class Rso {
 
     private boolean approval;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "admin_id", referencedColumnName = "id", nullable = false)
     private User admin;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "university_id", referencedColumnName = "id", nullable = false)
     private University university;

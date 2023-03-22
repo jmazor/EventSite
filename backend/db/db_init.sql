@@ -41,8 +41,8 @@ CREATE TABLE student
 (
     id           CHAR(36) NOT NULL PRIMARY KEY,
     university_id CHAR(36) NOT NULL,
-    FOREIGN KEY (id) REFERENCES user (id),
-    FOREIGN KEY (university_id) REFERENCES university (id)
+    FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE,
 );
 
 -- Ensures that Student Email is part of Uni domain
@@ -51,7 +51,7 @@ CREATE TABLE student
 DELIMITER //
 CREATE TRIGGER validate_student_email
     BEFORE INSERT
-    ON user
+    ON student
     FOR EACH ROW
 BEGIN
     DECLARE uni_domain VARCHAR(255);

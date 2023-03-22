@@ -59,7 +59,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/login", "/api/admin/register",
-                                "/api/user/register", "/api/rso/all").permitAll() // Add this line
+                                "/api/user/register", "/api/rso/all", "/api/university/all").permitAll()
                         .requestMatchers("/api/admin/**", "/api/user/events").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
                         .anyRequest().authenticated()
