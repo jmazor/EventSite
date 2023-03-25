@@ -20,6 +20,7 @@ CREATE TABLE super_admin
     verification CHAR(36) NOT NULL DEFAULT UUID(),
     id           CHAR(36) NOT NULL DEFAULT UUID() PRIMARY KEY,
     FOREIGN KEY (id) REFERENCES user (id)
+    ON DELETE CASCADE
 );
 
 -- --------------------------------------------------------
@@ -42,12 +43,10 @@ CREATE TABLE student
     id           CHAR(36) NOT NULL PRIMARY KEY,
     university_id CHAR(36) NOT NULL,
     FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE,
+    FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE
 );
 
 -- Ensures that Student Email is part of Uni domain
--- TODO: verify that this works
-
 DELIMITER //
 CREATE TRIGGER validate_student_email
     BEFORE INSERT
@@ -55,7 +54,7 @@ CREATE TRIGGER validate_student_email
     FOR EACH ROW
 BEGIN
     DECLARE uni_domain VARCHAR(255);
-    SELECT email_domain INTO uni_domain FROM university WHERE id = NEW.id;
+    SELECT email_domain INTO uni_domain FROM university WHERE id = NEW.university_id;
     IF SUBSTRING((SELECT email FROM user WHERE id = NEW.id),
                  INSTR((SELECT email FROM user WHERE id = NEW.id), '@') + 1) != uni_domain THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email domain does not match university domain.';
@@ -64,6 +63,7 @@ END;
 //
 
 DELIMITER ;
+
 
 -- --------------------------------------------------------
 -- TODO: When a new RSO is created automatically add them to users
