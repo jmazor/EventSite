@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 @Service
-public class RsoService extends AbstractService<Rso, String> {
+public class RsoService  {
     private final RsoRepository rsoRepository;
     public RsoService(RsoRepository rsoRepository) {
         this.rsoRepository = rsoRepository;
@@ -24,7 +24,20 @@ public class RsoService extends AbstractService<Rso, String> {
         return rsoRepository.findByUniversity(university);
     }
 
-    public List<Rso> findByUniversityAndApproval(University university, boolean approval) {
-        return rsoRepository.findByUniversityAndApproval(university, approval);
+    public List<Rso> findByUniversityAndStatus(University university, boolean status) {
+        return rsoRepository.findByUniversityAndStatus(university, status);
+    }
+
+    public Rso findById(String id) {
+        return rsoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("RSO not found"));
+    }
+
+    public Rso save(Rso rso) {
+        return rsoRepository.save(rso);
+    }
+
+    public Rso addUser(Rso rso, User user) {
+        rso.getUsers().add(user);
+        return rsoRepository.save(rso);
     }
 }

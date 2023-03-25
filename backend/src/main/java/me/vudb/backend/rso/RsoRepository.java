@@ -9,6 +9,6 @@ import java.util.List;
 public interface RsoRepository extends JpaRepository<Rso, String> {
 
     List<Rso> findByUniversity(University university);
-    List<Rso> findByUniversityAndApproval(University university, boolean approval);
+    List<Rso> findByUniversityAndStatus(University university, boolean status);
 }
 

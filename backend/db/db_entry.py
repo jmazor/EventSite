@@ -91,11 +91,27 @@ iu_domain = "iu.edu"
 response = requests.get(f"{url}/api/university/all")
 universities = response.json()
 
-# Create 10 users with @ucf.edu email
 ucf_university = next(
     (university for university in universities if university["emailDomain"] == ucf_domain),
     None,
 )
+
+mit_university = next(
+    (university for university in universities if university["emailDomain"] == mit_domain),
+    None,
+)
+
+iu_university = next(
+    (university for university in universities if university["emailDomain"] == iu_domain),
+    None,
+)
+
+# Initialize empty lists for storing created user data
+ucf_users = []
+mit_users = []
+iu_users = []
+
+# Create 10 users with @ucf.edu email
 if ucf_university:
     for i in range(10):
         first_name = fake.first_name()
@@ -113,13 +129,9 @@ if ucf_university:
             "university": {"id": university_id},
         }
         response = requests.post(f"{url}/api/user/register", json=data)
-        print(response.json())
+        ucf_users.append(data["user"])  # Save the created UCF user data
 
 # Create 5 users with @mit.edu email
-mit_university = next(
-    (university for university in universities if university["emailDomain"] == mit_domain),
-    None,
-)
 if mit_university:
     for i in range(5):
         first_name = fake.first_name()
@@ -137,7 +149,8 @@ if mit_university:
             "university": {"id": university_id},
         }
         response = requests.post(f"{url}/api/user/register", json=data)
-        print(response.json())
+        mit_users.append(data["user"])  # Save the created MIT user data
+
 
 # Create 5 users with @iu.edu email
 iu_university = next(
@@ -162,3 +175,39 @@ if iu_university:
         }
         response = requests.post(f"{url}/api/user/register", json=data)
         print(response.json())
+
+
+def login_and_get_token(email, password):
+    response = requests.post(f"{url}/api/login", json={"username": email, "password": password})
+    if response.status_code != 200:
+        print(f"Failed to login to {email}")
+        return None
+    return response.json()["token"]
+
+
+# Find a UCF student and an MIT student
+ucf_student = ucf_users[0]
+mit_student = mit_users[0]
+
+if ucf_student and mit_student:
+    # Login as UCF student and create an RSO
+    token = login_and_get_token(ucf_student["email"], "password")
+    if token:
+        headers = {"Authorization": f"Bearer {token}"}
+        rso_data = {"name": "New UCF RSO", "universityId": ucf_university["id"]}
+        response = requests.post(f"{url}/api/rso/create", json=rso_data, headers=headers)
+        rso = response.json()
+        print(rso)
+
+    # Login as MIT student and join the created RSO
+
+    # Find 4 distinct UCF students and join the RSO
+    ucf_students = [user for user in ucf_users if ucf_domain in user["email"] and user["email"] != ucf_student["email"]][:4]
+    
+    for student in ucf_students:
+        token = login_and_get_token(student["email"], "password")
+        if token:
+            headers = {"Authorization": f"Bearer {token}"}
+            response = requests.post(f"{url}/api/rso/join", json={"id": rso["id"]}, headers=headers)
+            if response.status_code == 200:
+                print(response.content)
