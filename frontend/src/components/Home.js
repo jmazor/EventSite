@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import config from "../Config";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [rsoData, setRsoData] = useState([]);
   const [eventData, setEventData] = useState([]);
   const url = config.url;
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,12 +38,22 @@ const HomePage = () => {
     fetchData();
   }, [url]);
 
+  const handleAddEvent = () => {
+    navigate("/add-event");
+  };
+
+  const handleAddRso = () => {
+    navigate("/add-rso");
+  };
+
   return (
     <div>
       <h1>All RSO Data</h1>
       <pre>{JSON.stringify(rsoData, null, 2)}</pre>
       <h1>All Event Data</h1>
       <pre>{JSON.stringify(eventData, null, 2)}</pre>
+      <button onClick={handleAddEvent}>Add Event</button>
+      <button onClick={handleAddRso}>Add RSO</button>
     </div>
   );
 };
