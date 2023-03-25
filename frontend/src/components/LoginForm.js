@@ -1,110 +1,96 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../Config";
 
 const url = config.url;
 
-
 function LoginForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [universities, setUniversities] = useState([]);
-  const [selectedUniversity, setSelectedUniversity] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchUniversities();
-  }, []);
-
-  const fetchUniversities = async () => {
-    try {
-      const response = await fetch(`${url}/api/university/all`);
-      const data = await response.json();
-      setUniversities(data);
-    } catch (error) {
-      console.error("Fetch universities error:", error);
-    }
-  };
-
-  const handleSignup = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${url}/api/user/register`, {
+      const response = await fetch(`${url}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user: { email, firstName, lastName, password },
-          university: { id: selectedUniversity },
-        }),
+        body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      console.log("Signup response:", data);
-      // Handle the signup response here
+      console.log("Login response:", data);
+      // Store the JWT token in localStorage
+      localStorage.setItem("token", data.token);
+      
+      // Check the user's roles in the API response
+      if (data.roles.includes("ROLE_STUDENT")) {
+        // If the user is a student, redirect to the HomePage
+        navigate("/home");
+      } else if (data.roles.includes("ROLE_SUPER_ADMIN")) {
+        // If the user is a super admin, redirect to the admin page
+        navigate("/admin");
+      } else {
+        // If the user has a different role, handle it appropriately
+      }
     } catch (error) {
-      console.error("Signup error:", error);
-      // Handle the signup error here
+      console.error("Login error:", error);
+      // Handle the login error here
+    }
+  };
+  
+
+  const handleLogout = () => {
+    // Clear the JWT token from localStorage
+    localStorage.removeItem("token");
+    // Handle the logout here
+  };
+
+  const handleProtectedResource = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${url}/api/protected-resource`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log("Protected resource response:", data);
+      // Handle the protected resource response here
+    } catch (error) {
+      console.error("Protected resource error:", error);
+      // Handle the protected resource error here
     }
   };
 
   return (
-    <form onSubmit={handleSignup}>
-      <label>
-        First Name:
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        Last Name:
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        University:
-        <select
-          value={selectedUniversity}
-          onChange={(e) => setSelectedUniversity(e.target.value)}
-        >
-          <option value="">Select a university</option>
-          {universities.map((university) => (
-            <option key={university.id} value={university.id}>
-              {university.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <br />
-      <button type="submit">Signup</button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Username:
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </label>
+        <br />
+        <label>
+          Password:
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
+        <br />
+        <button type="submit">Login</button>
+      </form>
+      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleProtectedResource}>Protected Resource</button>
+    </>
   );
 }
-
 
 export default LoginForm;

@@ -1,6 +1,10 @@
 package me.vudb.backend.controller;
 
+import me.vudb.backend.event.EventService;
 import me.vudb.backend.event.models.Event;
+import me.vudb.backend.event.models.PrivateEvent;
+import me.vudb.backend.event.models.PublicEvent;
+import me.vudb.backend.event.models.RsoEvent;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.rso.RsoService;
 import me.vudb.backend.university.University;
@@ -25,12 +29,14 @@ import java.util.Set;
 public class UserController {
     private final UserService userService;
     private final RsoService rsoService;
+    private final EventService eventService;
 
     private final UniversityService universityService;
-    public UserController(UserService userService, RsoService rsoService, UniversityService universityService) {
+    public UserController(UserService userService, RsoService rsoService, UniversityService universityService, EventService eventService) {
         this.userService = userService;
         this.rsoService = rsoService;
         this.universityService = universityService;
+        this.eventService = eventService;
     }
 
     @PostMapping(path="/register")
@@ -60,7 +66,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/events")
+    @GetMapping("/events/registered")
     public ResponseEntity<List<Event>> getUserEvents() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -73,6 +79,39 @@ public class UserController {
 
         // Convert the set of events to a list and return it
         List<Event> eventList = new ArrayList<>(events);
+        return ResponseEntity.ok(eventList);
+    }
+
+    @GetMapping("/events")
+    public ResponseEntity<List<Event>> getPossibleUserEvents() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        // Retrieve the Student object associated with the User
+        Student student = userService.findStudentByEmail(username);
+
+        // Retrieve the University object associated with the Student
+        University university = student.getUniversity();
+
+        // Retrieve all public events
+        List<PublicEvent> publicEvents = eventService.findAllApprovedPublicEvents();
+
+        // Retrieve all private events associated with the user's university
+        List<PrivateEvent> privateEvents = eventService.findAllPrivateEvent(university);
+
+        // Retrieve all RSO events for the user's registered RSOs
+        List<RsoEvent> rsoEvents = new ArrayList<>();
+        for (Rso rso : student.getUser().getRso()) {
+            rsoEvents.addAll(eventService.findByRso(rso));
+        }
+
+        // Convert the public, private, and RSO events to a list of Event objects
+        List<Event> eventList = new ArrayList<>();
+        publicEvents.forEach(publicEvent -> eventList.add(publicEvent.getEvent()));
+        privateEvents.forEach(privateEvent -> eventList.add(privateEvent.getEvent()));
+        rsoEvents.forEach(rsoEvent -> eventList.add(rsoEvent.getEvent()));
+
+        // Return the combined list of events
         return ResponseEntity.ok(eventList);
     }
 }
