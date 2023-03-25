@@ -1,6 +1,6 @@
 FROM node:lts as builder
 # Install rsync
-RUN apt-get install -y rsync
+RUN apt-get update && apt-get install -y rsync
 # Set the working directory to /app inside the container
 WORKDIR /app
 # Copy app files
