@@ -94,4 +94,14 @@ public class EventController {
         // Return the combined list of events
         return ResponseEntity.ok(eventList);
     }
+
+    @GetMapping("/join/{eventId}")
+    public ResponseEntity<?> joinEvent() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return null;
+
+
+        
+    }
 }
