@@ -5,8 +5,10 @@ import me.vudb.backend.rso.RsoService;
 import me.vudb.backend.security.JwtTokenUtil;
 import me.vudb.backend.university.University;
 import me.vudb.backend.user.UserService;
+import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path="/api/rso")
@@ -37,9 +40,13 @@ public class RsoController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
+        Student student = userService.findStudentByEmail(username);
+
         // Ensure that approval is false
-        rso.setApproval(false);
-        rso.setAdmin(userService.findByEmail(username));
+        rso.setStatus(false);
+        rso.setUniversity(student.getUniversity());
+        rso.setAdmin(student.getUser());
+        student.getUser().getRso().add(rso);
         rsoService.save(rso);
         return ResponseEntity.ok(rso);
     }
@@ -48,19 +55,34 @@ public class RsoController {
     public ResponseEntity<Rso> joinRso(@RequestBody Rso rso) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-
-        // Ensure that approval is false
-        rso.setApproval(false);
-        rso.setAdmin(userService.findByEmail(username));
-        rsoService.save(rso);
+        rso = rsoService.findById(rso.getId());
+        User user = userService.findByEmail(username);
+        user.getRso().add(rso);
+        userService.save(user);
         return ResponseEntity.ok(rso);
     }
+
 
     @GetMapping("/all")
     public @ResponseBody List<Rso> getAll(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         University university = userService.findStudentUniversityByEmail(username);
-        return rsoService.findByUniversityAndApproval(university, true);
+        return rsoService.findByUniversityAndStatus(university, true);
+    }
+
+    // TODO: NO IDEA IF THIS WORKS
+    @GetMapping("/pending")
+    public @ResponseBody List<Rso> getPending(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        University university = userService.findStudentUniversityByEmail(username);
+        return rsoService.findByUniversityAndStatus(university, false);
+    }
+
+    @GetMapping("/{rsoId}")
+    public ResponseEntity<Set<User>> getUsersForRso(@PathVariable String rsoId) {
+        Set<User> users = rsoService.findUsersByRsoId(rsoId);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

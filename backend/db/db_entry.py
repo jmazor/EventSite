@@ -197,15 +197,9 @@ if ucf_student and mit_student:
         rso_data = {"name": "New UCF RSO", "universityId": ucf_university["id"]}
         response = requests.post(f"{url}/api/rso/create", json=rso_data, headers=headers)
         rso = response.json()
-        print(f"Created RSO: {rso['name']}")
+        print(rso)
 
     # Login as MIT student and join the created RSO
-    token = login_and_get_token(mit_student["email"], "password")
-    if token:
-        headers = {"Authorization": f"Bearer {token}"}
-        response = requests.post(f"{url}/api/rso/join", json={"rsoId": rso["id"]}, headers=headers)
-        if response.status_code == 200:
-            print(f"MIT student {mit_student['email']} joined RSO: {rso['name']}")
 
     # Find 4 distinct UCF students and join the RSO
     ucf_students = [user for user in ucf_users if ucf_domain in user["email"] and user["email"] != ucf_student["email"]][:4]
@@ -214,6 +208,6 @@ if ucf_student and mit_student:
         token = login_and_get_token(student["email"], "password")
         if token:
             headers = {"Authorization": f"Bearer {token}"}
-            response = requests.post(f"{url}/api/rso/join", json={"rsoId": rso["id"]}, headers=headers)
+            response = requests.post(f"{url}/api/rso/join", json={"id": rso["id"]}, headers=headers)
             if response.status_code == 200:
-                print(f"UCF student {student['email']} joined RSO: {rso['name']}")
+                print(response.content)

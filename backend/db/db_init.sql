@@ -100,13 +100,6 @@ CREATE TABLE admin
 -- Automatically Add User to RSO when created
 DELIMITER //
 
-CREATE TRIGGER trg_rso_create_user
-    AFTER INSERT
-    ON rso
-    FOR EACH ROW
-BEGIN
-    INSERT INTO rso_users (student_id, rso_id) VALUES (NEW.admin_id, NEW.id);
-END //
 
 -- A RSO user must belong to the same University
 

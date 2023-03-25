@@ -14,7 +14,7 @@ const HomePage = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const rsoResponse = await fetch(`${url}/api/rso/all`, {
+        const rsoResponse = await fetch(`${url}/api/user/rso`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

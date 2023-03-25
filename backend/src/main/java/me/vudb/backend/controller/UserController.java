@@ -60,10 +60,13 @@ public class UserController {
         return new ResponseEntity<>(rsos, HttpStatus.OK);
     }
 
-    @GetMapping("/rso/users/{rsoId}")
-    public ResponseEntity<Set<User>> getUsersForRso(@PathVariable String rsoId) {
-        Set<User> users = rsoService.findUsersByRsoId(rsoId);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @GetMapping("/rso")
+    public ResponseEntity<Set<Rso>> getRsoForUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userService.findByEmail(username);
+        Set<Rso> rsos = user.getRso();
+        return new ResponseEntity<>(rsos, HttpStatus.OK);
     }
 
     @GetMapping("/events/registered")

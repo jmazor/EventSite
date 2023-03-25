@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import me.vudb.backend.user.models.User;
 import me.vudb.backend.university.University;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonIdentityInfo(
@@ -21,7 +22,7 @@ public class Rso {
 
     private String name;
 
-    private boolean approval;
+    private boolean status;
 
     @JsonIgnore
     @ManyToOne()
@@ -35,7 +36,7 @@ public class Rso {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "rso")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     public String getId() {
         return id;
@@ -53,12 +54,12 @@ public class Rso {
         this.name = name;
     }
 
-    public boolean isApproval() {
-        return approval;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setApproval(boolean approval) {
-        this.approval = approval;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public User getAdmin() {
@@ -84,4 +85,5 @@ public class Rso {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
+
 }
