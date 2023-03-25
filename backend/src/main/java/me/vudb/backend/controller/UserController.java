@@ -82,36 +82,4 @@ public class UserController {
         return ResponseEntity.ok(eventList);
     }
 
-    @GetMapping("/events")
-    public ResponseEntity<List<Event>> getPossibleUserEvents() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        // Retrieve the Student object associated with the User
-        Student student = userService.findStudentByEmail(username);
-
-        // Retrieve the University object associated with the Student
-        University university = student.getUniversity();
-
-        // Retrieve all public events
-        List<PublicEvent> publicEvents = eventService.findAllApprovedPublicEvents();
-
-        // Retrieve all private events associated with the user's university
-        List<PrivateEvent> privateEvents = eventService.findAllPrivateEvent(university);
-
-        // Retrieve all RSO events for the user's registered RSOs
-        List<RsoEvent> rsoEvents = new ArrayList<>();
-        for (Rso rso : student.getUser().getRso()) {
-            rsoEvents.addAll(eventService.findByRso(rso));
-        }
-
-        // Convert the public, private, and RSO events to a list of Event objects
-        List<Event> eventList = new ArrayList<>();
-        publicEvents.forEach(publicEvent -> eventList.add(publicEvent.getEvent()));
-        privateEvents.forEach(privateEvent -> eventList.add(privateEvent.getEvent()));
-        rsoEvents.forEach(rsoEvent -> eventList.add(rsoEvent.getEvent()));
-
-        // Return the combined list of events
-        return ResponseEntity.ok(eventList);
-    }
 }

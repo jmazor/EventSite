@@ -41,7 +41,7 @@ function RegisterForm() {
       });
       const data = await response.json();
       console.log("Signup response:", data);
-      // Handle the signup response here
+      navigate("/login");
     } catch (error) {
       console.error("Signup error:", error);
       // Handle the signup error here

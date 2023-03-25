@@ -7,6 +7,7 @@ import LoginForm from "./components/LoginForm";
 import AdminForm from "./components/AdminForm.js";
 import CreateUniversity from "./components/CreateUniversity.js";
 import Admin from "./components/Admin";
+import AddEvent from "./components/AddEvent";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/adminCreate" element={<AdminForm />} />
         <Route path="/createUniversity" element={<CreateUniversity />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/add-event" element={<AddEvent />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </Router>
