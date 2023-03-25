@@ -75,7 +75,7 @@ CREATE TABLE rso
     admin_id     CHAR(36)              NOT NULL,
     name         VARCHAR(255) NOT NULL,
     university_id CHAR(36)     NOT NULL,
-    approval     BOOL         NOT NULL DEFAULT FALSE,
+    status     BOOL         NOT NULL DEFAULT FALSE,
     FOREIGN KEY (admin_id) REFERENCES user (id),
     FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE
 );
@@ -127,29 +127,6 @@ BEGIN
     END IF;
 END //
 
-DELIMITER ;
-
-
--- Approves an RSO when 4 users
-/*
-DELIMITER //
-CREATE TRIGGER trg_rso_approval
-    AFTER INSERT
-    ON RsoUsers
-    FOR EACH ROW
-BEGIN
-    DECLARE num_active_users INT;
-    SELECT COUNT(*) INTO num_active_users FROM RsoUsers WHERE rsoID = NEW.rsoID;
-    IF num_active_users >= 4 THEN
-        UPDATE Rso SET approval = TRUE WHERE id = NEW.rsoID;
-    END IF;
-END //
-DELIMITER ;
-*/
-
--- TODO: Change this to a procedure
-
-DELIMITER //
 
 CREATE TRIGGER trg_rso_admin
     AFTER INSERT
@@ -158,8 +135,42 @@ CREATE TRIGGER trg_rso_admin
 BEGIN
     DECLARE num_active_users INT;
     SELECT COUNT(*) INTO num_active_users FROM rso_users WHERE rso_id = NEW.rso_id;
-    IF num_active_users >= 4 THEN
+    IF num_active_users = 5 THEN
         INSERT INTO admin (id, rso_id) VALUES (NEW.student_id, NEW.rso_id);
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER trg_rso_status_update
+    AFTER INSERT
+    ON rso_users
+    FOR EACH ROW
+BEGIN
+    DECLARE num_active_users INT;
+    SELECT COUNT(*) INTO num_active_users FROM rso_users WHERE rso_id = NEW.rso_id;
+
+    IF num_active_users > 4 THEN
+        UPDATE rso SET status = TRUE WHERE id = NEW.rso_id;
+    ELSE
+        UPDATE rso SET status = FALSE WHERE id = NEW.rso_id;
+    END IF;
+END //
+
+CREATE TRIGGER trg_rso_status_update_after_delete
+    AFTER DELETE
+    ON rso_users
+    FOR EACH ROW
+BEGIN
+    DECLARE num_active_users INT;
+    SELECT COUNT(*) INTO num_active_users FROM rso_users WHERE rso_id = OLD.rso_id;
+
+    IF num_active_users > 4 THEN
+        UPDATE rso SET status = TRUE WHERE id = OLD.rso_id;
+    ELSE
+        UPDATE rso SET status = FALSE WHERE id = OLD.rso_id;
     END IF;
 END //
 
