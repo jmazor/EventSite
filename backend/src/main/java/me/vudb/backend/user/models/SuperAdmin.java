@@ -1,6 +1,7 @@
 package me.vudb.backend.user.models;
 
 import jakarta.persistence.*;
+import me.vudb.backend.university.University;
 
 import java.util.UUID;
 
@@ -14,7 +15,6 @@ public class SuperAdmin {
     @JoinColumn(name = "id")
     private User user;
 
-    // FIXME: Just use generated value?
     @GeneratedValue(strategy = GenerationType.UUID)
     private String verification = UUID.randomUUID().toString();
 
@@ -33,4 +33,5 @@ public class SuperAdmin {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

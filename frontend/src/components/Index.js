@@ -88,7 +88,7 @@ const LoginPage = () => {
                     navigate("/home");
                 } else if (response.data.roles.includes("ROLE_SUPER_ADMIN")) {
                     // If the user is a super admin, redirect to the admin page
-                    navigate("/admin");
+                    navigate("/superadmin");
                 } else {
                     // If the user has a different role, handle it appropriately
                 }

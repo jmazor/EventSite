@@ -47,6 +47,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User saveExisting(User user) {
+        return userRepository.save(user);
+    }
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -104,5 +108,9 @@ public class UserService {
 
     public Student findStudentByEmail(String username) {
         return studentRepository.findByUserEmail(username);
+    }
+
+    public SuperAdmin findSuperAdminByEmail(String username) {
+        return superAdminRepository.findByUserEmail(username);
     }
 }

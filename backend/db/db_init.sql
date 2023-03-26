@@ -91,9 +91,9 @@ CREATE TABLE rso_users
 -- TODO: We can count rso_users to get the number of members
 CREATE TABLE admin
 (
-    id CHAR(36) NOT NULL,
+    id CHAR(36) NOT NULL PRIMARY KEY,
     rso_id     CHAR(36) NOT NULL,
-    FOREIGN KEY (id) REFERENCES user (id),
+    FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE,
     FOREIGN KEY (rso_id) REFERENCES rso (id)
 );
 
@@ -175,7 +175,7 @@ CREATE TABLE event
 (
     id           CHAR(36) PRIMARY KEY DEFAULT UUID(),
     name         VARCHAR(255)                                                                                                                                                                                      NOT NULL,
-    category     ENUM ('academic', 'arts', 'career', 'performance', 'entertainment', 'health', 'holiday', 'meeting', 'forum', 'recreation', 'service', 'social', 'speaker', 'sports', 'tour', 'other', 'workshop') NOT NULL,
+    CATEGORY ENUM ('ACADEMIC', 'ARTS', 'CAREER', 'PERFORMANCE', 'ENTERTAINMENT', 'HEALTH', 'HOLIDAY', 'MEETING', 'FORUM', 'RECREATION', 'SERVICE', 'SOCIAL', 'SPEAKER', 'SPORTS', 'TOUR', 'OTHER', 'WORKSHOP') NOT NULL,
     description  TEXT                                                                                                                                                                                              NOT NULL,
     start_date    DATETIME                                                                                                                                                                                          NOT NULL,
     end_date      DATETIME                                                                                                                                                                                          NOT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE event
 
 CREATE TABLE public_event
 (
-    admin_id    CHAR(36) NOT NULL,
+    admin_id    CHAR(36),
     id    CHAR(36) NOT NULL PRIMARY KEY,
     approval     BOOL                 DEFAULT FALSE,
     FOREIGN KEY (admin_id) references super_admin (id),

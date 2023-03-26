@@ -39,5 +39,4 @@ public class PrivateEvent {
         this.event = event;
     }
 
-
 }

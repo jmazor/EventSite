@@ -8,8 +8,10 @@ import me.vudb.backend.event.models.RsoEvent;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.security.JwtTokenUtil;
 import me.vudb.backend.university.University;
+import me.vudb.backend.university.UniversityService;
 import me.vudb.backend.user.UserService;
 import me.vudb.backend.user.models.Student;
+import me.vudb.backend.user.models.SuperAdmin;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -26,32 +28,58 @@ public class EventController {
 
     private AuthenticationManager authenticationManager;
 
+    private UniversityService universityService;
+
     private UserService userService;
 
     private JwtTokenUtil jwtTokenUtil;
-    public EventController(EventService eventService, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public EventController(EventService eventService, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService, UniversityService universityService) {
         this.eventService = eventService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
+        this.universityService = universityService;
     }
 
     @PostMapping("/create/public")
-    public ResponseEntity<?> createPublicEvent(@RequestBody PublicEvent publicEvent) {
+    public ResponseEntity<?> createPublicEvent(@RequestBody Event event) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // TODO: ensure that the user is a admin
         String username = auth.getName();
 
-        return null;
+        PublicEvent publicEvent = new PublicEvent();
+        publicEvent.setEvent(event);
+
+
+        publicEvent.setApproval(
+                auth.getAuthorities().stream().anyMatch(
+                        authority -> authority.getAuthority().equals("ROLE_SUPER_ADMIN")
+                )
+        );
+        if (publicEvent.isApproval()) {
+            publicEvent.setAdmin(userService.findSuperAdminByEmail(username));
+        }
+        eventService.savePublic(publicEvent);
+
+        return ResponseEntity.ok(publicEvent);
+
     }
 
     @PostMapping("/create/private")
-    public ResponseEntity<?> createPublicEvent(@RequestBody PrivateEvent privateEvent) {
+    public ResponseEntity<?> createPrivateEvent(@RequestBody Event event) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // TODO: ensure that the user is a SuperAdmin
+
         String username = auth.getName();
-        return null;
+        SuperAdmin superAdmin = userService.findSuperAdminByEmail(username);
+        University university = universityService.findByAdmin(superAdmin);
+        PrivateEvent privateEvent = new PrivateEvent();
+        privateEvent.setEvent(event);
+        privateEvent.setUniversity(university);
+
+
+        eventService.savePrivate(privateEvent);
+        return ResponseEntity.ok(privateEvent);
     }
+
 
     @PostMapping("/create/rso")
     public ResponseEntity<?> createRsoEvent(@RequestBody RsoEvent rsoEvent) {
@@ -101,7 +129,29 @@ public class EventController {
         String username = auth.getName();
         return null;
 
-
-        
     }
+
+    @GetMapping("/need/approval")
+    public ResponseEntity<?> getEventsNeedingApproval() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        List<PublicEvent> events = eventService.findAllPublicEventsNeedingApproval();
+        return ResponseEntity.ok(events);
+    }
+
+    @PostMapping("/approve")
+    public ResponseEntity<?> approveEvents(@RequestBody List<PublicEvent> publicEvents) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        SuperAdmin superAdmin = userService.findSuperAdminByEmail(username);
+
+        for (PublicEvent publicEvent : publicEvents) {
+            publicEvent.setApproval(true);
+            publicEvent.setAdmin(superAdmin);
+            eventService.savePublic(publicEvent);
+        }
+
+        return ResponseEntity.ok("Approved");
+    }
+
 }

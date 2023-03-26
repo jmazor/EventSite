@@ -58,7 +58,7 @@ public class RsoController {
         rso = rsoService.findById(rso.getId());
         User user = userService.findByEmail(username);
         user.getRso().add(rso);
-        userService.save(user);
+        userService.saveExisting(user);
         return ResponseEntity.ok(rso);
     }
 

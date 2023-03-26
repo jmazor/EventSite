@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
         User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + username);
@@ -38,19 +37,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // Check if the user is a SUPER_ADMIN
         if (superAdminRepository.findById(user.getId()).isPresent()) {
-            System.out.println("SUPER_ADMIN");
             authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
+        }
+
+        if (adminRepository.findById(user.getId()).isPresent()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
 
         if (studentRepository.findById(user.getId()).isPresent()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
         }
-
-        // Check if the user is an ADMIN
-        if (adminRepository.findById(user.getId()).isPresent()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new CustomUserDetails(user, authorities);
     }

@@ -1,7 +1,7 @@
 package me.vudb.backend.event.models;
 
 import jakarta.persistence.*;
-import me.vudb.backend.user.models.Admin;
+import me.vudb.backend.user.models.SuperAdmin;
 
 @Entity
 public class PublicEvent {
@@ -11,8 +11,8 @@ public class PublicEvent {
     private boolean approval = false;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id", referencedColumnName = "id", nullable = false)
-    private Admin admin;
+    @JoinColumn(name = "admin_id", referencedColumnName = "id")
+    private SuperAdmin admin;
 
     @OneToOne()
     @MapsId
@@ -35,11 +35,11 @@ public class PublicEvent {
         this.approval = approval;
     }
 
-    public Admin getAdmin() {
+    public SuperAdmin getAdmin() {
         return admin;
     }
 
-    public void setAdmin(Admin admin) {
+    public void setAdmin(SuperAdmin admin) {
         this.admin = admin;
     }
 

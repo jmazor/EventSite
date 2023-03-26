@@ -69,4 +69,15 @@ public class EventService {
         return publicEventRepository.findByApprovalFalse();
     }
 
+    public void savePrivate(PrivateEvent privateEvent) {
+        privateEventRepository.save(privateEvent);
+    }
+
+    public List<PublicEvent> findAllPublicEventsNeedingApproval() {
+        return publicEventRepository.findByApprovalFalse();
+    }
+
+    public void savePublic(PublicEvent publicEvent) {
+        publicEventRepository.save(publicEvent);
+    }
 }

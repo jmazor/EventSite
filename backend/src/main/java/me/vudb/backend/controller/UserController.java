@@ -10,8 +10,11 @@ import me.vudb.backend.rso.RsoService;
 import me.vudb.backend.university.University;
 import me.vudb.backend.university.UniversityService;
 import me.vudb.backend.user.UserService;
+import me.vudb.backend.user.models.Admin;
 import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.User;
+import me.vudb.backend.user.repository.AdminRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +33,7 @@ public class UserController {
     private final UserService userService;
     private final RsoService rsoService;
     private final EventService eventService;
+
 
     private final UniversityService universityService;
     public UserController(UserService userService, RsoService rsoService, UniversityService universityService, EventService eventService) {
@@ -84,5 +88,6 @@ public class UserController {
         List<Event> eventList = new ArrayList<>(events);
         return ResponseEntity.ok(eventList);
     }
+
 
 }
