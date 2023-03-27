@@ -76,7 +76,7 @@ CREATE TABLE rso
     name         VARCHAR(255) NOT NULL,
     university_id CHAR(36)     NOT NULL,
     status     BOOL         NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (admin_id) REFERENCES user (id),
+    FOREIGN KEY (admin_id) REFERENCES user (id) ON DELETE CASCADE,
     FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE
 );
 
@@ -84,8 +84,8 @@ CREATE TABLE rso_users
 (
     student_id CHAR(36) NOT NULL,
     rso_id     CHAR(36) NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES user (id),
-    FOREIGN KEY (rso_id) REFERENCES rso (id),
+    FOREIGN KEY (student_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (rso_id) REFERENCES rso (id) ON DELETE CASCADE,
     PRIMARY KEY (student_id, rso_id)
 );
 -- TODO: We can count rso_users to get the number of members
@@ -194,8 +194,8 @@ CREATE TABLE public_event
     admin_id    CHAR(36),
     id    CHAR(36) NOT NULL PRIMARY KEY,
     approval     BOOL                 DEFAULT FALSE,
-    FOREIGN KEY (admin_id) references super_admin (id),
-    FOREIGN KEY (id) REFERENCES event (id)
+    FOREIGN KEY (admin_id) references super_admin (id) ON DELETE CASCADE,
+    FOREIGN KEY (id) REFERENCES event (id) ON DELETE CASCADE
 );
 
 -- TODO: Trigger to ensure userID is a SuperAdmin
@@ -204,16 +204,16 @@ CREATE TABLE private_event
 (
     university_id CHAR(36) NOT NULL,
     id      CHAR(36) NOT NULL PRIMARY KEY,
-    FOREIGN KEY (university_id) REFERENCES university (id),
-    FOREIGN KEY (id) REFERENCES event (id)
+    FOREIGN KEY (university_id) REFERENCES university (id) ON DELETE CASCADE,
+    FOREIGN KEY (id) REFERENCES event (id) ON DELETE CASCADE
 );
 
 CREATE TABLE rso_event
 (
     rso_id CHAR(36) NOT NULL,
     id      CHAR(36) NOT NULL PRIMARY KEY,
-    FOREIGN KEY (id) REFERENCES event (id),
-    FOREIGN KEY (rso_id) REFERENCES rso (id)
+    FOREIGN KEY (id) REFERENCES event (id) ON DELETE CASCADE,
+    FOREIGN KEY (rso_id) REFERENCES rso (id) ON DELETE CASCADE
 );
 
 
@@ -222,8 +222,8 @@ CREATE TABLE event_users
     user_id  CHAR(36) NOT NULL,
     id CHAR(36) NOT NULL,
     rating  INT,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (id) REFERENCES event (id),
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (id) REFERENCES event (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, id)
 );
 
@@ -269,8 +269,9 @@ CREATE Table comments
     text    TEXT     NOT NULL,
     user_id  CHAR(36) NOT NULL,
     event_id CHAR(36) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (event_id) REFERENCES event (id)
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES event (id) ON DELETE CASCADE
 );
 
 -- Ensures User was part of event
@@ -283,9 +284,9 @@ CREATE TRIGGER trg_comment_check_user
     FOR EACH ROW
 BEGIN
     DECLARE user_count INT;
-    SELECT COUNT(*) INTO user_count FROM event_users WHERE user_id = NEW.user_id AND event_id = NEW.event_id;
+    SELECT COUNT(*) INTO user_count FROM event_users WHERE user_id = NEW.user_id AND id = NEW.event_id;
     IF user_count = 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User must be part of the event to comment on it';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User must be part of the event to comments on it';
     END IF;
 END //
 

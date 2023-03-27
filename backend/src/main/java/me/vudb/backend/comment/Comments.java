@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import me.vudb.backend.event.models.Event;
 import me.vudb.backend.user.models.User;
 
+import java.time.LocalDateTime;
+
 @Entity
-public class Comment {
+public class Comments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -15,13 +17,17 @@ public class Comment {
     @Column(nullable = false)
     private String text;
 
+    private LocalDateTime date = LocalDateTime.now();
+
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 
+
     @ManyToOne()
     @JoinColumn(name = "event_id")
     private Event event;
+
 
     public String getId() {
         return id;
@@ -53,5 +59,13 @@ public class Comment {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
-import me.vudb.backend.comment.Comment;
+import me.vudb.backend.comment.Comments;
 import me.vudb.backend.user.models.User;
 
 import java.time.LocalDateTime;
@@ -46,8 +46,9 @@ public class Event {
     @ManyToMany(mappedBy = "events")
     private Set<User> users = new HashSet<>();
 
-    //@OneToMany(mappedBy = "event")
-    //private Set<Comment> comments = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private Set<Comments> comments = new HashSet<>();
 
 
     public void setId(String id) {
@@ -142,4 +143,11 @@ public class Event {
         this.users.add(user);
     }
 
+    public Set<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comments> comments) {
+        this.comments = comments;
+    }
 }

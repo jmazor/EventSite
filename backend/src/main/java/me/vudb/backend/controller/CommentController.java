@@ -1,6 +1,6 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.comment.Comment;
+import me.vudb.backend.comment.Comments;
 import me.vudb.backend.comment.CommentService;
 import me.vudb.backend.event.EventService;
 import me.vudb.backend.event.models.Event;
@@ -10,15 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/api/event")
+@RequestMapping(path="/api/comment")
 public class CommentController {
     private final CommentService commentService;
     private final UserService userService;
@@ -30,46 +27,47 @@ public class CommentController {
         this.eventService = eventService;
     }
 
-    public ResponseEntity<?> commentOnEvent(@RequestBody Comment comment) {
+    @PostMapping("/create")
+    public ResponseEntity<?> commentOnEvent(@RequestBody Comments comments) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         Optional<User> optionalUser = userService.findByEmailOpt(email);
-        Optional<Event> optionalEvent = eventService.findById(comment.getEvent().getId());
+        Optional<Event> optionalEvent = eventService.findById(comments.getEvent().getId());
 
         if (optionalUser.isPresent() && optionalEvent.isPresent()) {
             User user = optionalUser.get();
             Event event = optionalEvent.get();
 
-            comment.setUser(user);
-            comment.setEvent(event);
-            Comment savedComment = commentService.save(comment);
-            return ResponseEntity.ok(savedComment);
+            comments.setUser(user);
+            comments.setEvent(event);
+            commentService.save(comments);
+            return ResponseEntity.ok("saved");
         } else {
             return ResponseEntity.badRequest().body("User or event not found.");
         }
     }
 
-    @PostMapping("/comment/edit")
-    public ResponseEntity<?> editComment(@RequestBody Comment newCommentData) {
+    @PostMapping("/edit")
+    public ResponseEntity<?> editComment(@RequestBody Comments newCommentsData) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         Optional<User> optionalUser = userService.findByEmailOpt(email);
-        Optional<Event> optionalEvent = eventService.findById(newCommentData.getEvent().getId());
+        Optional<Event> optionalEvent = eventService.findById(newCommentsData.getEvent().getId());
 
         if (optionalUser.isPresent() && optionalEvent.isPresent()) {
             User user = optionalUser.get();
             Event event = optionalEvent.get();
 
-            Optional<Comment> optionalExistingComment = commentService.findById(newCommentData.getId());
+            Optional<Comments> optionalExistingComment = commentService.findById(newCommentsData.getId());
             if (optionalExistingComment.isPresent()) {
-                Comment existingComment = optionalExistingComment.get();
+                Comments existingComments = optionalExistingComment.get();
 
                 // Check if the authenticated user is the author of the comment
-                if (existingComment.getUser().getId().equals(user.getId())) {
-                    Comment updatedComment = commentService.editComment(existingComment, newCommentData, user, event);
-                    return ResponseEntity.ok(updatedComment);
+                if (existingComments.getUser().getId().equals(user.getId())) {
+                    Comments updatedComments = commentService.editComment(existingComments, newCommentsData, user, event);
+                    return ResponseEntity.ok(updatedComments);
                 } else {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to edit this comment.");
                 }
@@ -83,25 +81,25 @@ public class CommentController {
 
 
 
-    @PostMapping("/comment/delete")
-    public ResponseEntity<?> deleteComment(@RequestBody Comment comment) {
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteComment(@RequestBody Comments comments) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         Optional<User> optionalUser = userService.findByEmailOpt(email);
-        Optional<Event> optionalEvent = eventService.findById(comment.getEvent().getId());
+        Optional<Event> optionalEvent = eventService.findById(comments.getEvent().getId());
 
         if (optionalUser.isPresent() && optionalEvent.isPresent()) {
             User user = optionalUser.get();
             Event event = optionalEvent.get();
 
-            Optional<Comment> optionalExistingComment = commentService.findById(comment.getId());
+            Optional<Comments> optionalExistingComment = commentService.findById(comments.getId());
             if (optionalExistingComment.isPresent()) {
-                Comment existingComment = optionalExistingComment.get();
+                Comments existingComments = optionalExistingComment.get();
 
                 // Check if the authenticated user is the author of the comment
-                if (existingComment.getUser().getId().equals(user.getId())) {
-                    commentService.delete(existingComment);
+                if (existingComments.getUser().getId().equals(user.getId())) {
+                    commentService.delete(existingComments);
                     return ResponseEntity.ok("Comment deleted successfully.");
                 } else {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to delete this comment.");
@@ -111,6 +109,18 @@ public class CommentController {
             }
         } else {
             return ResponseEntity.badRequest().body("User or event not found.");
+        }
+    }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<?> getCommentsByEventId(@PathVariable String eventId) {
+        System.out.println("test");
+        Optional<Event> optionalEvent = eventService.findById(eventId);
+        if (optionalEvent.isPresent()) {
+            Event event = optionalEvent.get();
+            return ResponseEntity.ok(event.getComments());
+        } else {
+            return ResponseEntity.badRequest().body("Event not found.");
         }
     }
 

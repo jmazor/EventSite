@@ -4,6 +4,7 @@ import me.vudb.backend.event.models.Event;
 import me.vudb.backend.user.models.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,22 +15,26 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Comment save(Comment comment) {
-        return commentRepository.save(comment);
+    public Comments save(Comments comments) {
+        return commentRepository.save(comments);
     }
 
-    public void delete(Comment comment) {
-        commentRepository.delete(comment);
+    public void delete(Comments comments) {
+        commentRepository.delete(comments);
     }
 
-    public Comment editComment(Comment existingComment, Comment newCommentData, User user, Event event) {
-        existingComment.setText(newCommentData.getText());
-        existingComment.setUser(user);
-        existingComment.setEvent(event);
-        return commentRepository.save(existingComment);
+    public Comments editComment(Comments existingComments, Comments newCommentsData, User user, Event event) {
+        existingComments.setText(newCommentsData.getText());
+        existingComments.setUser(user);
+        existingComments.setEvent(event);
+        return commentRepository.save(existingComments);
     }
 
-    public Optional<Comment> findById(String id) {
+    public Optional<Comments> findById(String id) {
         return commentRepository.findById(id);
+    }
+
+    public List<Comments> findAllByEvent(Event event) {
+        return commentRepository.findAllByEvent(event);
     }
 }

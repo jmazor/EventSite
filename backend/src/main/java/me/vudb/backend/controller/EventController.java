@@ -1,6 +1,5 @@
 package me.vudb.backend.controller;
 
-import me.vudb.backend.comment.Comment;
 import me.vudb.backend.event.EventService;
 import me.vudb.backend.event.models.Event;
 import me.vudb.backend.event.models.PrivateEvent;
@@ -173,7 +172,7 @@ public class EventController {
             event.addUser(user);
             user.getEvents().add(event);
             eventService.save(event);
-            userService.save(user);
+            userService.saveExisting(user);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");

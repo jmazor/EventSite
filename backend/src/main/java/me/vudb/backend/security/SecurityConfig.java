@@ -59,12 +59,14 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/login", "/api/admin/register",
                                 "/api/user/register", "/api/rso/all", "/api/university/all",
-                                "/api/test/**", "/api/event/all", "/api/event/joined", "/api/event/join").permitAll()
+                                "/api/test/**", "/api/event/all", "/api/event/joined", "/api/event/join",
+                                "/api/event/**").permitAll()
                         .requestMatchers("/api/admin/**", "/api/user/events", "/api/event/private","/api/event/need/approval"
                         ,"/api/event/approve").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/event/create/public").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers("/api/event/create/rso").hasAnyRole("ADMIN")
                         .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
+                        .requestMatchers("/api/comment/**").hasAnyRole("STUDENT", "ADMIN", "SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling()
