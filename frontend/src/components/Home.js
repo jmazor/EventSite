@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import config from "../Config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const HomePage = () => {
   const [rsoData, setRsoData] = useState([]);
@@ -22,7 +22,7 @@ const HomePage = () => {
         const rsoJson = await rsoResponse.json();
         setRsoData(rsoJson);
 
-        const eventResponse = await fetch(`${url}/api/event/all`, {
+        const eventResponse = await fetch(`${url}/api/event/joined`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,13 +48,17 @@ const HomePage = () => {
 
   return (
     <div>
-      <h1>All RSO Data</h1>
-      <pre>{JSON.stringify(rsoData, null, 2)}</pre>
-      <h1>All Event Data</h1>
-      <pre>{JSON.stringify(eventData, null, 2)}</pre>
-      <button onClick={handleAddEvent}>Add Event</button>
-      <button onClick={handleAddRso}>Add RSO</button>
-    </div>
+    <h1>All RSO Data</h1>
+    <pre>{JSON.stringify(rsoData, null, 2)}</pre>
+    <h1>All Event Data</h1>
+    {eventData.map((event) => (
+      <div key={event.id}>
+        <Link to={`/event/${event.id}`}>{event.name}</Link>
+      </div>
+    ))}
+    <button onClick={handleAddEvent}>Add Event</button>
+    <button onClick={handleAddRso}>Add RSO</button>
+  </div>
   );
 };
 

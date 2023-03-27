@@ -4,9 +4,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.university.University;
+import me.vudb.backend.user.models.Admin;
 import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.SuperAdmin;
 import me.vudb.backend.user.models.User;
+import me.vudb.backend.user.repository.AdminRepository;
 import me.vudb.backend.user.repository.StudentRepository;
 import me.vudb.backend.user.repository.SuperAdminRepository;
 import me.vudb.backend.user.repository.UserRepository;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,17 +28,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final SuperAdminRepository superAdminRepository;
+
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        StudentRepository studentRepository,
                        SuperAdminRepository superAdminRepository,
-                       @Lazy PasswordEncoder passwordEncoder) {
+                       @Lazy PasswordEncoder passwordEncoder,
+                       AdminRepository adminRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.superAdminRepository = superAdminRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminRepository = adminRepository;
     }
 
     public User findByEmail(String email) {
@@ -112,5 +119,13 @@ public class UserService {
 
     public SuperAdmin findSuperAdminByEmail(String username) {
         return superAdminRepository.findByUserEmail(username);
+    }
+
+    public Admin findAdminByUserEmail(String username) {
+        return adminRepository.findByUserEmail(username);
+    }
+
+    public Optional<User> findByEmailOpt(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 }

@@ -3,6 +3,7 @@ package me.vudb.backend.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import me.vudb.backend.comment.Comment;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.event.models.Event;
 
@@ -28,13 +29,17 @@ public class User {
     private Set<Rso> rso;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "event_users",
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable( name = "event_users",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "id")
     )
     private Set<Event> events = new HashSet<>();
+
+    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private Set<Comment> comments = new HashSet<>();
+
+
     public String getId() {
         return id;
     }
@@ -90,4 +95,5 @@ public class User {
     public void setEvents(Set<Event> events) {
         this.events = events;
     }
+
 }

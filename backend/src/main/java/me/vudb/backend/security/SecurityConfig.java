@@ -56,14 +56,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
+        http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/login", "/api/admin/register",
                                 "/api/user/register", "/api/rso/all", "/api/university/all",
-                                "/api/test/**", "/api/event/all").permitAll()
+                                "/api/test/**", "/api/event/all", "/api/event/joined", "/api/event/join").permitAll()
                         .requestMatchers("/api/admin/**", "/api/user/events", "/api/event/private","/api/event/need/approval"
                         ,"/api/event/approve").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/event/create/public").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/event/create/rso").hasAnyRole("ADMIN")
                         .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
                         .anyRequest().authenticated()
                 )

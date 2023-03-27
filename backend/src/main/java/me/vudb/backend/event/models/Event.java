@@ -1,9 +1,11 @@
 package me.vudb.backend.event.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
+import me.vudb.backend.comment.Comment;
 import me.vudb.backend.user.models.User;
 
 import java.time.LocalDateTime;
@@ -40,9 +42,13 @@ public class Event {
         ACADEMIC, ARTS, CAREER, PERFORMANCE, ENTERTAINMENT, HEALTH, HOLIDAY, MEETING, FORUM, RECREATION, SERVICE, SOCIAL, SPEAKER, SPORTS, TOUR, OTHER, WORKSHOP
     }
 
-    // TODO: Fixme mapped by
+    @JsonIgnore
     @ManyToMany(mappedBy = "events")
     private Set<User> users = new HashSet<>();
+
+    //@OneToMany(mappedBy = "event")
+    //private Set<Comment> comments = new HashSet<>();
+
 
     public void setId(String id) {
         this.id = id;
@@ -122,6 +128,18 @@ public class Event {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
     }
 
 }

@@ -10,6 +10,7 @@ import me.vudb.backend.event.repository.PublicEventRepository;
 import me.vudb.backend.event.repository.RsoEventRepository;
 import me.vudb.backend.rso.Rso;
 import me.vudb.backend.university.University;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,5 +80,13 @@ public class EventService {
 
     public void savePublic(PublicEvent publicEvent) {
         publicEventRepository.save(publicEvent);
+    }
+
+    public void saveRso(RsoEvent rsoEvent) {
+        rsoEventRepository.save(rsoEvent);
+    }
+
+    public Optional<Event> getEvent(String eventId) {
+        return eventRepository.findById(eventId);
     }
 }

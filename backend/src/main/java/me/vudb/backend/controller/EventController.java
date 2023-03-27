@@ -1,5 +1,6 @@
 package me.vudb.backend.controller;
 
+import me.vudb.backend.comment.Comment;
 import me.vudb.backend.event.EventService;
 import me.vudb.backend.event.models.Event;
 import me.vudb.backend.event.models.PrivateEvent;
@@ -10,8 +11,11 @@ import me.vudb.backend.security.JwtTokenUtil;
 import me.vudb.backend.university.University;
 import me.vudb.backend.university.UniversityService;
 import me.vudb.backend.user.UserService;
+import me.vudb.backend.user.models.Admin;
 import me.vudb.backend.user.models.Student;
 import me.vudb.backend.user.models.SuperAdmin;
+import me.vudb.backend.user.models.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path="/api/event")
@@ -82,12 +87,29 @@ public class EventController {
 
 
     @PostMapping("/create/rso")
-    public ResponseEntity<?> createRsoEvent(@RequestBody RsoEvent rsoEvent) {
+    public ResponseEntity<?> createRsoEvent(@RequestBody Event event) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // TODO: ensure that the user is a admin
+
+        String username = auth.getName();
+        Admin admin = userService.findAdminByUserEmail(username);
+        RsoEvent rsoEvent = new RsoEvent();
+        rsoEvent.setEvent(event);
+        rsoEvent.setRso(admin.getRso());
+
+        eventService.saveRso(rsoEvent);
+
+        return ResponseEntity.ok(rsoEvent);
+    }
+
+    @GetMapping("/joined")
+    public ResponseEntity<List<Event>> getJoinedEvents() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        return null;
+        User user = userService.findByEmail(username);
+        List<Event> eventList = new ArrayList<>(user.getEvents());
+
+        return ResponseEntity.ok(eventList);
     }
 
     @GetMapping("/all")
@@ -123,13 +145,41 @@ public class EventController {
         return ResponseEntity.ok(eventList);
     }
 
-    @GetMapping("/join/{eventId}")
-    public ResponseEntity<?> joinEvent() {
+    @GetMapping("/{eventId}")
+    public ResponseEntity<?> getEvent(@PathVariable String eventId){
+        Optional<Event> optionalEvent = eventService.getEvent(eventId);
+        if (optionalEvent.isPresent()) {
+            return ResponseEntity.ok(optionalEvent.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<?> joinEvent(@RequestBody Event event) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        return null;
+        System.out.println(event.getDescription());
+        Optional<Event> optionalEvent = eventService.getEvent(event.getId());
+        if (optionalEvent.isPresent()) {
+            event = optionalEvent.get();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
 
+        Optional<User> optionalUser = userService.findByEmailOpt(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            event.addUser(user);
+            user.getEvents().add(event);
+            eventService.save(event);
+            userService.save(user);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        }
     }
+
 
     @GetMapping("/need/approval")
     public ResponseEntity<?> getEventsNeedingApproval() {
@@ -153,5 +203,7 @@ public class EventController {
 
         return ResponseEntity.ok("Approved");
     }
+
+
 
 }
