@@ -1,6 +1,5 @@
 package me.vudb.backend.rso;
 import jakarta.persistence.EntityNotFoundException;
-import me.vudb.backend.AbstractService;
 import me.vudb.backend.university.University;
 import me.vudb.backend.user.models.User;
 import org.springframework.stereotype.Service;
@@ -39,5 +38,9 @@ public class RsoService  {
     public Rso addUser(Rso rso, User user) {
         rso.getUsers().add(user);
         return rsoRepository.save(rso);
+    }
+
+    public List<Rso> findAllByAdmin(User user) {
+        return rsoRepository.findAllByAdmin(user);
     }
 }

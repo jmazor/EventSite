@@ -64,9 +64,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**", "/api/user/events", "/api/event/private","/api/event/need/approval"
                         ,"/api/event/approve").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/event/create/public").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers("/api/event/create/rso").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/event/create/rso", "/api/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
-                        .requestMatchers("/api/comment/**").hasAnyRole("STUDENT", "ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/comment/**", "/api/admin/rso").hasAnyRole("STUDENT", "ADMIN", "SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling()

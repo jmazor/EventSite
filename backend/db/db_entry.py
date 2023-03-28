@@ -198,6 +198,7 @@ if ucf_student and mit_student:
         response = requests.post(f"{url}/api/rso/create", json=rso_data, headers=headers)
         rso = response.json()
         print(rso)
+        print("Admin" + ' ' + ucf_student["email"])
 
     # Login as MIT student and join the created RSO
 

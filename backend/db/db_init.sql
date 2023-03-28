@@ -127,9 +127,11 @@ CREATE TRIGGER trg_rso_admin
     FOR EACH ROW
 BEGIN
     DECLARE num_active_users INT;
+    DECLARE admin VARCHAR(36);
     SELECT COUNT(*) INTO num_active_users FROM rso_users WHERE rso_id = NEW.rso_id;
+    SELECT admin_id INTO admin FROM rso WHERE id = NEW.rso_id;
     IF num_active_users = 5 THEN
-        INSERT INTO admin (id, rso_id) VALUES (NEW.student_id, NEW.rso_id);
+        INSERT INTO admin (id, rso_id) VALUES (admin, NEW.rso_id);
     END IF;
 END //
 
