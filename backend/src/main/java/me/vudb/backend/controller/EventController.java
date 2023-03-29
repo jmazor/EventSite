@@ -86,15 +86,13 @@ public class EventController {
 
 
     @PostMapping("/create/rso")
-    public ResponseEntity<?> createRsoEvent(@RequestBody Event event) {
+    public ResponseEntity<?> createRsoEvent(@RequestBody RsoEvent rsoEvent) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         String username = auth.getName();
         Admin admin = userService.findAdminByUserEmail(username);
-        RsoEvent rsoEvent = new RsoEvent();
-        rsoEvent.setEvent(event);
+        Event event = rsoEvent.getEvent();
         rsoEvent.setRso(admin.getRso());
-
         eventService.saveRso(rsoEvent);
 
         return ResponseEntity.ok(rsoEvent);
