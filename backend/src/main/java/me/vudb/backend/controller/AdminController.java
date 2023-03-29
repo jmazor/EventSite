@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="/api/admin")
+@RequestMapping(path="/api/rsoadmin")
 public class AdminController {
     private final UserService userService;
     private final RsoService rsoService;
@@ -30,7 +30,6 @@ public class AdminController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userService.findByEmail(username);
-        List<Rso> rsos = rsoService.findAllByAdmin(user);
-        return rsos;
+        return rsoService.findAllByAdmin(user);
     }
 }

@@ -1,8 +1,18 @@
 // components/CreatePublicEvent.js
 import React, { useState } from "react";
 import config from "../Config";
+import {
+    Button,
+    Modal,
+    Form,
+    FormGroup,
+    FormLabel,
+    FormControl,
+  } from "react-bootstrap";
+  import "bootstrap/dist/css/bootstrap.min.css";
 
 const url = config.url;
+
 
 function CreatePublicEvent() {
     const [name, setName] = useState("");
@@ -49,21 +59,21 @@ function CreatePublicEvent() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Event Name:
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Category:
-                <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <FormLabel>Event Name:</FormLabel>
+            <FormControl
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Category:</FormLabel>
+            <FormControl
+              as="select"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
                 >
                     <option value="">Select a category</option>
                     <option value="academic">Academic</option>
@@ -83,75 +93,68 @@ function CreatePublicEvent() {
                     <option value="tour">Tour</option>
                     <option value="other">Other</option>
                     <option value="workshop">Workshop</option>
-                </select>
-            </label>
-            <br />
-            <label>
-                Description:
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Start Date and Time:
-                <input
-                    type="datetime-local"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                End Date and Time:
-                <input
-                    type="datetime-local"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Location
-                Name:
-                <input
-                    type="text"
-                    value={locationName}
-                    onChange={(e) => setLocationName(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Location URL:
-                <input
-                    type="text"
-                    value={locationURL}
-                    onChange={(e) => setLocationURL(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Phone:
-                <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                />
-            </label>
-            <br />
-            <label>
-                Email:
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-            </label>
-            <br />
-            <button type="submit">Create Public Event</button>
-        </form>
-    );
+                    </FormControl>
+                    </FormGroup>
+      <FormGroup>
+        <FormLabel>Description:</FormLabel>
+        <FormControl
+          as="textarea"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Start Date and Time:</FormLabel>
+        <FormControl
+          type="datetime-local"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>End Date and Time:</FormLabel>
+        <FormControl
+          type="datetime-local"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Location Name:</FormLabel>
+        <FormControl
+          type="text"
+          value={locationName}
+          onChange={(e) => setLocationName(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Location URL:</FormLabel>
+        <FormControl
+          type="text"
+          value={locationURL}
+          onChange={(e) => setLocationURL(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Phone:</FormLabel>
+        <FormControl
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Email:</FormLabel>
+        <FormControl
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </FormGroup>
+      <Button type="submit">Create Public Event</Button>
+    </Form>
+  );
 }
+
 
 export default CreatePublicEvent;

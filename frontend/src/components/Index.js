@@ -82,6 +82,8 @@ const LoginPage = () => {
             console.log(response.data);
             if (response.status === 200) {
                 localStorage.setItem("token", response.data.token);
+                localStorage.setItem("username", response.data.username);
+                localStorage.setItem("roles", response.data.roles);
                 // Check the user's roles in the API response
                 if (response.data.roles.includes("ROLE_STUDENT")) {
                     // If the user is a student, redirect to the HomePage

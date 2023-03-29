@@ -49,7 +49,7 @@ public class AuthController {
         final List<String> roles = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(token, roles));
+        return ResponseEntity.ok(new JwtResponse(token, roles, authenticationRequest.getUsername()));
     }
 
     private void authenticate(String username, String password) throws Exception {

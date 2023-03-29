@@ -12,6 +12,7 @@ import CreatePublicEvent from "./components/CreatePublicEvent";
 import CreateRsoEvent from "./components/CreateRsoEvent";
 import ApproveEvents from "./components/ApproveEvents";
 import EventPage from "./components/EventPage";
+import Admin from "./components/Admin";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/createPublicEvent" element={<CreatePublicEvent />} />
         <Route path="/createRsoEvent" element={<CreateRsoEvent />} />
         <Route path="/approveEvents" element={<ApproveEvents />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/event/:eventId" element={<EventPage />} />
       </Routes>
     </Router>

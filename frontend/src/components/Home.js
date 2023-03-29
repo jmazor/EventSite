@@ -16,6 +16,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
 const HomePage = () => {
+  const roles = localStorage.getItem("roles");
+  const isAdmin = roles.includes("ROLE_ADMIN");
   const [rsoData, setRsoData] = useState([]);
   const [eventData, setEventData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -122,6 +124,13 @@ const HomePage = () => {
 
       <Button variant="primary" onClick={handleAddEvent}>Add Event</Button>
       <Button variant="primary" onClick={handleAddRso}>Add RSO</Button>
+
+      {isAdmin && (
+         <Button variant="primary" onClick={() => navigate("/admin")}>
+           Admin Dashboard
+         </Button>
+       )}
+
 
       <Button variant="primary" onClick={handleShowModal}>
         Create RSO with Bootstrap
