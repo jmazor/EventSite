@@ -61,7 +61,16 @@ public class RsoController {
         userService.saveExisting(user);
         return ResponseEntity.ok(rso);
     }
-
+    @GetMapping("/join/{rsoId}")
+    public ResponseEntity<String> joinNonApprovedRso(@PathVariable String rsoId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        Rso rso = rsoService.findById(rsoId);
+        User user = userService.findByEmail(username);
+        user.getRso().add(rso);
+        userService.saveExisting(user);
+        return ResponseEntity.ok("RSO successfully joined!");
+    }
 
     @GetMapping("/all")
     public @ResponseBody List<Rso> getAll(){

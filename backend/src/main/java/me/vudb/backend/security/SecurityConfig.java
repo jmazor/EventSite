@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/event/create/public").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers("/api/event/create/rso", "/api/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/api/user/**", "/api/rso/create").hasRole("STUDENT")
+                        .requestMatchers("/api/rso/join/*").hasAnyRole("STUDENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling()

@@ -50,7 +50,7 @@
 
     return (
       <div>
-        <h1>All Events</h1>
+        <h1>All Rso</h1>
         {eventData.map((event, index) => (
           <div key={index}>
             <pre>{JSON.stringify(event, null, 2)}</pre>

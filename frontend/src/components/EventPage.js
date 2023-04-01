@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import config from "../Config";
 import { useParams } from "react-router-dom";
+import { Card, Button, Form } from "react-bootstrap";
 
 const EventPage = () => {
   const [eventData, setEventData] = useState(null);
@@ -128,56 +129,76 @@ const EventPage = () => {
 };
 
 const Comment = ({ comment, onEdit, onDelete }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedText, setEditedText] = useState(comment.text);
-  
-    const handleEdit = async (event) => {
-      event.preventDefault();
-  
-      const editedComment = { ...comment, text: editedText };
-  
-      await onEdit(editedComment);
-  
-      setIsEditing(false);
-    };
-  
-    const handleDelete = async (event) => {
-      event.preventDefault();
-  
-      await onDelete(comment);
-  
-      setIsEditing(false);
-    };
-  
-    return (
-      <div>
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState(comment.text);
+
+  const loggedInUserEmail = localStorage.getItem("username");
+
+  const handleEdit = async (event) => {
+    event.preventDefault();
+
+    const editedComment = { ...comment, text: editedText };
+
+    await onEdit(editedComment);
+
+    setIsEditing(false);
+  };
+
+  const handleDelete = async (event) => {
+    event.preventDefault();
+
+    await onDelete(comment);
+
+    setIsEditing(false);
+  };
+
+  return (
+    <Card className="mb-3">
+      <Card.Body>
         {!isEditing ? (
           <>
-            <p>{comment.text}</p>
-            <p>By {comment.user.email}</p>
-            <p>On {new Date(comment.date).toLocaleString()}</p>
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
+            <Card.Text>{comment.text}</Card.Text>
+            <Card.Subtitle className="mb-2 text-muted">
+              By {comment.user.email} -{" "}
+              {new Date(comment.date).toLocaleString()}
+            </Card.Subtitle>
+            {loggedInUserEmail === comment.user.email && (
+              <>
+                <Button
+                  variant="primary"
+                  className="me-2"
+                  onClick={() => setIsEditing(true)}
+                >
+                  Edit
+                </Button>
+                <Button variant="danger" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </>
+            )}
           </>
         ) : (
-          <form onSubmit={handleEdit}>
-            <label>
-              Edit Comment:
-              <input
+          <Form onSubmit={handleEdit}>
+            <Form.Group controlId="editComment">
+              <Form.Label>Edit Comment:</Form.Label>
+              <Form.Control
                 type="text"
                 value={editedText}
                 onChange={(event) => setEditedText(event.target.value)}
               />
-            </label>
-            <button type="submit">Save</button>
-            <button type="button" onClick={() => setIsEditing(false)}>
+            </Form.Group>
+            <Button type="submit" className="me-2">
+              Save
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => setIsEditing(false)}>
               Cancel
-            </button>
-          </form>
+            </Button>
+          </Form>
         )}
-      </div>
-    );
-  };
+      </Card.Body>
+    </Card>
+  );
+};
   
   const AddCommentForm = ({ onAdd, eventId }) => {
     const [commentText, setCommentText] = useState("");

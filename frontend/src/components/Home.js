@@ -133,7 +133,7 @@ const HomePage = () => {
 
 
       <Button variant="primary" onClick={handleShowModal}>
-        Create RSO with Bootstrap
+        Create RSO
       </Button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -150,9 +150,6 @@ const HomePage = () => {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
           </Form>
         </Modal.Body>
       </Modal>

@@ -61,6 +61,8 @@ public class EventController {
         );
         if (publicEvent.isApproval()) {
             publicEvent.setAdmin(userService.findSuperAdminByEmail(username));
+        } else {
+           userService.findByEmail(username).getEvents().add(event);
         }
         eventService.savePublic(publicEvent);
 
@@ -93,6 +95,7 @@ public class EventController {
         Admin admin = userService.findAdminByUserEmail(username);
         Event event = rsoEvent.getEvent();
         rsoEvent.setRso(admin.getRso());
+        admin.getUser().getEvents().add(rsoEvent.getEvent());
         eventService.saveRso(rsoEvent);
 
         return ResponseEntity.ok(rsoEvent);

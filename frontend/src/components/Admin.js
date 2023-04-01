@@ -175,11 +175,6 @@ const Admin = () => {
                 <Modal.Body>
                     <CreatePublicEvent />
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClosePublicEventModal}>
-                        Close
-                    </Button>
-                </Modal.Footer>
             </Modal>
 
         </div>

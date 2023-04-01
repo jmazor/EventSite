@@ -13,6 +13,7 @@ import CreateRsoEvent from "./components/CreateRsoEvent";
 import ApproveEvents from "./components/ApproveEvents";
 import EventPage from "./components/EventPage";
 import Admin from "./components/Admin";
+import JoinNewRso from "./components/JoinNewRso";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/approveEvents" element={<ApproveEvents />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/event/:eventId" element={<EventPage />} />
+        <Route path="/join/:rsoId" element={<JoinNewRso />} /> 
       </Routes>
     </Router>
   );
