@@ -18,6 +18,7 @@ import {
 const url = config.url;
 
 const googleMapsApiKey = config.googleMapsApiKey;
+console.log("key" + googleMapsApiKey)
 
 const mapContainerStyle = {
   width: "100%",
@@ -26,11 +27,12 @@ const mapContainerStyle = {
 
 const defaultCenter = {
   lat: 28.6024,
-  lng: -81.2001, // Set default center to New York City
+  lng: -81.2001, // UCF
 };
 
 
 function CreatePublicEvent({ onClose }) {
+
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
