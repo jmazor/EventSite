@@ -72,6 +72,21 @@ public class RsoController {
         return ResponseEntity.ok("RSO successfully joined!");
     }
 
+    @DeleteMapping("/leave/{rsoId}")
+    public ResponseEntity<String> leaveRso(@PathVariable String rsoId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        Rso rso = rsoService.findById(rsoId);
+        if (username.equals(rso.getAdmin().getEmail())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You cannot leave an RSO you created!");
+        }
+        User user = userService.findByEmail(username);
+        user.getRso().remove(rso);
+        userService.saveExisting(user);
+        rso.getUsers().remove(user);
+        return ResponseEntity.ok("RSO successfully left!");
+    }
+
     @GetMapping("/all")
     public @ResponseBody List<Rso> getAll(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

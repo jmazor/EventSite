@@ -10,10 +10,11 @@ import {
   Form,
   FormGroup,
   FormLabel,
-  FormControl
-} from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
+  FormControl,
+  Card,
+} from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 
 const HomePage = () => {
   const roles = localStorage.getItem("roles");
@@ -22,11 +23,18 @@ const HomePage = () => {
   const [eventData, setEventData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [rsoName, setRsoName] = useState("");
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [selectedRso, setSelectedRso] = useState(null);
   const url = config.url;
   const navigate = useNavigate();
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
+  const handleCloseLeaveModal = () => setShowLeaveModal(false);
+  const handleShowLeaveModal = (rso) => {
+    setSelectedRso(rso);
+    setShowLeaveModal(true);
+  };
 
   const handleRsoCreate = async (e) => {
     e.preventDefault();
@@ -49,6 +57,25 @@ const HomePage = () => {
     }
   };
 
+  const handleLeaveRso = async () => {
+    const token = localStorage.getItem("token");
+    const rsoId = selectedRso.id;
+    try {
+      const response = await fetch(`${url}/api/rso/leave/${rsoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const jsonData = await response;
+      console.log(jsonData);
+      handleCloseLeaveModal();
+      // Refresh RSO data or handle new RSO data here
+    } catch (error) {
+      console.error("Error leaving RSO:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,30 +103,6 @@ const HomePage = () => {
       }
     };
 
-    const handleCloseModal = () => setShowModal(false);
-    const handleShowModal = () => setShowModal(true);
-
-    const handleRsoCreate = async (e) => {
-      e.preventDefault();
-      const token = localStorage.getItem("token");
-      try {
-        const response = await fetch(`${url}/api/rso/create`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ name: rsoName }),
-        });
-        const jsonData = await response.json();
-        console.log(jsonData);
-        handleCloseModal();
-        // Refresh RSO data or handle new RSO data here
-      } catch (error) {
-        console.error("Error creating RSO:", error);
-      }
-    };
-
     fetchData();
   }, [url]);
 
@@ -114,7 +117,20 @@ const HomePage = () => {
   return (
     <div>
       <h1>All RSO Data</h1>
-      <pre>{JSON.stringify(rsoData, null, 2)}</pre>
+      <div className="d-flex flex-wrap">
+        {rsoData.map((rso) => (
+          <Card style={{ width: "18rem", margin: "1rem" }} key={rso.id}>
+            <Card.Body>
+              <Card.Title>{rso.name}</Card.Title>
+              <Card.Text>{rso.description}</Card.Text>
+              <Button variant="primary" onClick={() => handleShowLeaveModal(rso)}>
+                Leave
+              </Button>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+
       <h1>All Event Data</h1>
       {eventData.map((event) => (
         <div key={event.id}>
@@ -122,19 +138,23 @@ const HomePage = () => {
         </div>
       ))}
 
-      <Button variant="primary" onClick={handleAddEvent}>Add Event</Button>
-      <Button variant="primary" onClick={handleAddRso}>Add RSO</Button>
+      <Button variant="primary" onClick={handleAddEvent}>
+        Add Event
+      </Button>
+      <Button variant="primary" onClick={handleAddRso}>
+        Add RSO
+      </Button>
 
       {isAdmin && (
-         <Button variant="primary" onClick={() => navigate("/admin")}>
-           Admin Dashboard
-         </Button>
-       )}
-
+        <Button variant="primary" onClick={() => navigate("/admin")}>
+          Admin Dashboard
+        </Button>
+      )}
 
       <Button variant="primary" onClick={handleShowModal}>
         Create RSO
       </Button>
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Create RSO</Modal.Title>
@@ -153,7 +173,25 @@ const HomePage = () => {
           </Form>
         </Modal.Body>
       </Modal>
+
+      <Modal show={showLeaveModal} onHide={handleCloseLeaveModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Leave RSO</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to leave {selectedRso?.name}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseLeaveModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleLeaveRso}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
+
 export default HomePage;
