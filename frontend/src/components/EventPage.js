@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import config from "../Config";
 import { useParams } from "react-router-dom";
 import { Card, Button, Form } from "react-bootstrap";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 const EventPage = () => {
   const [eventData, setEventData] = useState(null);

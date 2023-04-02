@@ -30,7 +30,7 @@ const defaultCenter = {
 };
 
 
-function CreatePublicEvent() {
+function CreatePublicEvent({ onClose }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -41,6 +41,8 @@ function CreatePublicEvent() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [locationError, setLocationError] = useState(false);
+
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey,
@@ -59,6 +61,12 @@ function CreatePublicEvent() {
     event.preventDefault();
 
     const token = localStorage.getItem("token");
+    if (!markerPosition) {
+      setLocationError(true);
+      return;
+    } else {
+      setLocationError(false);
+    }
 
     try {
       const response = await fetch(`${url}/api/event/create/public`, {
@@ -74,7 +82,7 @@ function CreatePublicEvent() {
           startDate: startDate,
           endDate: endDate,
           locationName: locationName,
-          locationURL: locationURL,
+          locationUrl: locationURL,
           phone,
           email,
         }),
@@ -100,6 +108,7 @@ function CreatePublicEvent() {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
@@ -108,6 +117,7 @@ function CreatePublicEvent() {
           as="select"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          required
         >
           <option value="">Select a category</option>
           <option value="academic">Academic</option>
@@ -135,6 +145,7 @@ function CreatePublicEvent() {
           as="textarea"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
@@ -143,6 +154,7 @@ function CreatePublicEvent() {
           type="datetime-local"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
@@ -151,6 +163,7 @@ function CreatePublicEvent() {
           type="datetime-local"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
@@ -159,34 +172,35 @@ function CreatePublicEvent() {
           type="text"
           value={locationName}
           onChange={(e) => setLocationName(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
-        <FormLabel>Event Location:</FormLabel>
-        <GoogleMap
-          id="location-map"
-          mapContainerStyle={mapContainerStyle}
-          zoom={10}
-          center={defaultCenter}
-          onClick={onMapClick}
-        >
-          {markerPosition && <Marker position={markerPosition} />}
-        </GoogleMap>
-      </FormGroup>
-      <FormGroup>
-        <FormLabel>Location URL:</FormLabel>
-        <FormControl
-          type="text"
-          value={locationURL}
-          onChange={(e) => setLocationURL(e.target.value)}
-        />
-      </FormGroup>
+  <FormLabel>Event Location:</FormLabel>
+  <GoogleMap
+    id="location-map"
+    mapContainerStyle={mapContainerStyle}
+    zoom={10}
+    center={defaultCenter}
+    onClick={onMapClick}
+  >
+    {markerPosition && <Marker position={markerPosition} />}
+  </GoogleMap>
+  {locationError && (
+    <div className="text-danger">
+      Please select a location on the map.
+    </div>
+  )}
+</FormGroup>
+
+
       <FormGroup>
         <FormLabel>Phone:</FormLabel>
         <FormControl
           type="text"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          required
         />
       </FormGroup>
       <FormGroup>
@@ -195,20 +209,19 @@ function CreatePublicEvent() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </FormGroup>
-      <ModalFooter>
-        <div className="d-flex justify-content-between">
-          <Button variant="primary" type="submit">
-            Create
-          </Button>
-          <Button variant="secondary" className="ml-auto" >
-            Close
-          </Button>
-        </div>
+      <ModalFooter style={{ display: "flex" }}>
+        <Button variant="primary" type="submit" style={{ marginRight: "auto" }}>
+          Create
+        </Button>
+        <Button variant="secondary" style={{ marginLeft: "auto" }} onClick={onClose}>          Close
+        </Button>
       </ModalFooter>
 
     </Form>
+
   );
 }
 

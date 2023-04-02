@@ -1,5 +1,5 @@
-// components/ApproveEvents.js
 import React, { useState, useEffect } from "react";
+import { Card, Button } from "react-bootstrap";
 import config from "../Config";
 
 const url = config.url;
@@ -68,20 +68,50 @@ function ApproveEvents() {
     }
   };
 
+  const formatDateRange = (startDate, endDate) => {
+    const start = new Date(startDate).toLocaleString();
+    const end = new Date(endDate).toLocaleString();
+    return `${start} - ${end}`;
+  };
+
   return (
     <div>
       {events.map((event) => (
-        <div key={event.id}>
-          <input
-            type="checkbox"
-            onChange={(e) => handleCheckboxChange(e, event.id)}
-          />
-          <pre>{JSON.stringify(event, null, 2)}</pre>
-        </div>
-      ))}
-      <button onClick={handleApprove}>Approve Selected Events</button>
-    </div>
-  );
+        <Card key={event.id} className="my-3">
+          <Card.Header>
+            <h5>{event.event.name}</h5>
+            <p>{event.event.category}</p>
+          </Card.Header>
+          <Card.Body>
+            <p>{event.event.description}</p>
+            <p>
+              Location:{" "}
+              {event.event.locationName || "N/A"}{" "}
+              {event.event.locationUrl && (
+                <a href={event.event.locationUrl}>View map</a>
+              )}
+            </p>
+            <p>Phone: {event.event.phone || "N/A"}</p>
+            <p>Email: {event.event.email}</p>
+          </Card.Body>
+          <Card.Footer>
+            <small className="text-muted">
+              Date: {formatDateRange(event.event.startDate, event.event.endDate)}
+            </small>
+          </Card.Footer>
+          <Card.Footer>
+            <input
+              type="checkbox"
+              onChange={(e) => handleCheckboxChange(e, event.id)}
+              />
+            </Card.Footer>
+          </Card>
+        ))}
+        <Button onClick={handleApprove} disabled={selectedEvents.length === 0}>
+          Approve Selected Events
+        </Button>
+      </div>
+ );
 }
 
-export default ApproveEvents;
+export default ApproveEvents;     

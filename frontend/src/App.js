@@ -9,7 +9,6 @@ import AddEvent from "./components/AddEvent";
 import AddRso from "./components/AddRso";
 import CreatePrivateEvent from "./components/CreatePrivateEvent";
 import CreatePublicEvent from "./components/CreatePublicEvent";
-import CreateRsoEvent from "./components/CreateRsoEvent";
 import ApproveEvents from "./components/ApproveEvents";
 import EventPage from "./components/EventPage";
 import Admin from "./components/Admin";
@@ -29,7 +28,6 @@ function App() {
         <Route path="/add-rso" element={<AddRso />} />
         <Route path="/createPrivateEvent" element={<CreatePrivateEvent />} />
         <Route path="/createPublicEvent" element={<CreatePublicEvent />} />
-        <Route path="/createRsoEvent" element={<CreateRsoEvent />} />
         <Route path="/approveEvents" element={<ApproveEvents />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/event/:eventId" element={<EventPage />} />

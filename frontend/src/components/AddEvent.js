@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import config from "../Config";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 const AddEvent = () => {
   const [eventData, setEventData] = useState([]);
@@ -48,17 +50,41 @@ const AddEvent = () => {
     }
   };
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString();
+  };
+
   return (
-    <div>
-      <h1>All Events</h1>
-      {eventData.map((event, index) => (
-        <div key={index}>
-          <pre>{JSON.stringify(event, null, 2)}</pre>
-          <button onClick={() => handleJoinEvent(event)}>Join Event</button>
-        </div>
-      ))}
+    <div className="container">
+      <h1 className="my-4">All Events</h1>
+      <div className="row">
+        {eventData.map((event, index) => (
+          <div key={index} className="col-md-4">
+            <div className="card mb-4">
+              <div className="card-body">
+                <h5 className="card-title">{event.name}</h5>
+                <p className="card-text">{event.description}</p>
+
+                <p className="card-text">
+                  <small className="text-muted">
+                    {formatDate(event.startDate)} - {formatDate(event.endDate)}
+                  </small>
+                </p>
+                <p className="card-text">Location: {event.locationName}</p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleJoinEvent(event)}
+                >
+                  Join Event
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
 
 export default AddEvent;
