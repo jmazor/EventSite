@@ -4,17 +4,11 @@ import { useNavigate, Link } from "react-router-dom";
 import {
   Button,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Form,
-  FormGroup,
-  FormLabel,
-  FormControl,
   Card,
+  Table,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
 
 const HomePage = () => {
   const roles = localStorage.getItem("roles");
@@ -123,20 +117,53 @@ const HomePage = () => {
             <Card.Body>
               <Card.Title>{rso.name}</Card.Title>
               <Card.Text>{rso.description}</Card.Text>
-              <Button variant="primary" onClick={() => handleShowLeaveModal(rso)}>
-                Leave
-              </Button>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Button variant="primary" onClick={() => handleShowLeaveModal(rso)}>
+                  Leave
+                </Button>
+                {rso.status === false && (
+                  <p style={{ marginLeft: "2rem" }}>
+                    <a href={`${url}/join/${rso.id}`}>{`Join URL`}</a>
+                  </p>
+                )}
+              </div>
             </Card.Body>
           </Card>
+
         ))}
       </div>
 
       <h1>All Event Data</h1>
-      {eventData.map((event) => (
-        <div key={event.id}>
-          <Link to={`/event/${event.id}`}>{event.name}</Link>
-        </div>
-      ))}
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Date Range</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {eventData.map((event) => (
+            <tr key={event.id}>
+              <td>
+                <Link to={`/event/${event.id}`}>{event.name}</Link>
+              </td>
+              <td>{event.category}</td>
+              <td>{event.description}</td>
+              <td>
+                {event.start_date} - {event.end_date}
+              </td>
+              <td>{event.phone}</td>
+              <td>{event.email}</td>
+              <td>{event.locationName}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
 
       <Button variant="primary" onClick={handleAddEvent}>
         Add Event

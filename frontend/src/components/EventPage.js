@@ -1,8 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import config from "../Config";
 import { useParams } from "react-router-dom";
-import { Card, Button, Form } from "react-bootstrap";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Card, Button, Form, ListGroup, Row, Col, Container } from "react-bootstrap";
+import { GoogleMap, Marker, useLoadScript, useGoogleMap } from "@react-google-maps/api";
+const containerStyle = {
+  width: "100%",
+  height: "500px",
+};
+
+const api_key = config.googleMapsApiKey
+const MapWithMarker = ({ lat, lng }) => {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: api_key,
+  });
+
+  const [marker, setMarker] = useState(null);
+
+  const onMapLoad = useCallback((map) => {
+    const newMarker = new window.google.maps.Marker({
+      position: { lat, lng },
+      map,
+    });
+    setMarker(newMarker);
+  }, [lat, lng]);
+
+  useEffect(() => {
+    return () => {
+      if (marker) {
+        marker.setMap(null);
+      }
+    };
+  }, [marker]);
+
+  return (
+    <>
+      {isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={{ lat, lng }}
+          zoom={16}
+          onLoad={onMapLoad}
+        />
+      ) : (
+        <p>Loading map...</p>
+      )}
+    </>
+  );
+};
+
+
 
 const EventPage = () => {
   const [eventData, setEventData] = useState(null);
@@ -107,26 +153,66 @@ const EventPage = () => {
     }
   };
 
+  const formatDateRange = (startDate, endDate) => {
+    const start = new Date(startDate).toLocaleString();
+    const end = new Date(endDate).toLocaleString();
+    return `${start} - ${end}`;
+  };
+
+  const latLngRegex = /q=([-.\d]+),([-.\d]+)/;
+  const match = eventData?.locationUrl ? eventData.locationUrl.match(latLngRegex) : null;
+  const lat = match ? parseFloat(match[1]) : null;
+  const lng = match ? parseFloat(match[2]) : null;
+
   return (
-    <div>
-      {eventData && (
-        <>
-          <h1>Event Details</h1>
-          <pre>{JSON.stringify(eventData, null, 2)}</pre>
-        </>
-      )}
-      <h1>Comments</h1>
-      {comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          comment={comment}
-          onEdit={editComment}
-          onDelete={deleteComment}
-        />
-      ))}
-      <AddCommentForm onAdd={addComment} eventId={eventId} />
-    </div>
-  );
+      <div>
+        {eventData && (
+          <Card style={{ width: "100%", backgroundColor: "#8688c0" }}>
+            <Card.Body>
+              <Card.Title>{eventData.name}</Card.Title>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  Category: {eventData.category}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Description: {eventData.description}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Date Range: {formatDateRange(eventData.startDate, eventData.endDate)}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Phone: {eventData.phone || "N/A"}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Email: {eventData.email}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Location: {eventData.locationName || "N/A"}{" "}
+                  {eventData.locationUrl && (
+                    <a href={eventData.locationUrl}>View map</a>
+                  )}
+                </ListGroup.Item>
+              </ListGroup>
+            </Card.Body>
+            {lat && lng ? (
+              <MapWithMarker lat={lat} lng={lng} />
+            ) : (
+              <Card.Footer>No location found</Card.Footer>
+            )}
+          </Card>
+        )}
+        <h1>Comments</h1>
+        {comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            onEdit={editComment}
+            onDelete={deleteComment}
+          />
+        ))}
+        <AddCommentForm onAdd={addComment} eventId={eventId} />
+      </div>
+    );
 };
 
 const Comment = ({ comment, onEdit, onDelete }) => {
@@ -201,36 +287,51 @@ const Comment = ({ comment, onEdit, onDelete }) => {
   );
 };
   
-  const AddCommentForm = ({ onAdd, eventId }) => {
-    const [commentText, setCommentText] = useState("");
-  
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-  
-      const commentData = {
-        text: commentText,
-        event: {
-          id: eventId,
-        },
-      };
-  
-      await onAdd(commentData);
-  
-      setCommentText("");
+const AddCommentForm = ({ onAdd, eventId }) => {
+  const [commentText, setCommentText] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const commentData = {
+      text: commentText,
+      event: {
+        id: eventId,
+      },
     };
-  
-    return (
-      <form onSubmit={handleSubmit}>
-        <label>
-          Add a Comment:
-          <input
-            type="text"
-            value={commentText}
-            onChange={(event) => setCommentText(event.target.value)}
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    );
+
+    await onAdd(commentData);
+
+    setCommentText("");
   };
+
+  return (
+    <Container>
+      <h3>Add Comment</h3>
+      <Form onSubmit={handleSubmit}>
+        <Row>
+          <Col md={10}>
+            <Form.Group className="mb-0">
+              <Form.Control
+                as="textarea"
+                rows={1}
+                style={{ height: "30px" }}
+                placeholder="Write a comment..."
+                value={commentText}
+                onChange={(event) => setCommentText(event.target.value)}
+                required
+              />
+            </Form.Group>
+          </Col>
+          <Col md={2} className="d-flex align-items-end">
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
+  );
+};
+
 export default EventPage;  

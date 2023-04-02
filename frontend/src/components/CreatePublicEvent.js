@@ -18,7 +18,6 @@ import {
 const url = config.url;
 
 const googleMapsApiKey = config.googleMapsApiKey;
-console.log("key" + googleMapsApiKey)
 
 const mapContainerStyle = {
   width: "100%",
