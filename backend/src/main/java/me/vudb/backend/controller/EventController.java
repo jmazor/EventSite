@@ -204,6 +204,24 @@ public class EventController {
         return ResponseEntity.ok("Approved");
     }
 
+    /*
+    @PostMapping("/rate")
+    public ResponseEntity<?> rateEvent(@RequestBody Integer rating, @RequestParam String eventId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userService.findByEmail(username);
+        Event event = eventService.getEvent(eventId);
+        if (event.getRating() == null) {
+            event.setRating(rating);
+        } else {
+            event.setRating((event.getRating() + rating) / 2);
+        }
+        eventService.save(event);
+        return ResponseEntity.ok("Rated");
+    }
+
+     */
+
 
 
 }
