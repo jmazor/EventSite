@@ -120,7 +120,6 @@ BEGIN
     END IF;
 END //
 
-
 CREATE TRIGGER trg_rso_admin
     AFTER INSERT
     ON rso_users
@@ -130,10 +129,11 @@ BEGIN
     DECLARE admin VARCHAR(36);
     SELECT COUNT(*) INTO num_active_users FROM rso_users WHERE rso_id = NEW.rso_id;
     SELECT admin_id INTO admin FROM rso WHERE id = NEW.rso_id;
-    IF num_active_users = 5 THEN
+    IF num_active_users = 5 AND admin NOT IN (SELECT student_id FROM rso_users WHERE rso_id = NEW.rso_id) THEN
         INSERT INTO admin (id, rso_id) VALUES (admin, NEW.rso_id);
     END IF;
 END //
+
 
 DELIMITER ;
 
@@ -289,6 +289,46 @@ BEGIN
     SELECT COUNT(*) INTO user_count FROM event_users WHERE user_id = NEW.user_id AND id = NEW.event_id;
     IF user_count = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User must be part of the event to comments on it';
+    END IF;
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+
+-- Check for overlapping events with the same location
+CREATE TRIGGER trg_check_event_overlap
+    BEFORE INSERT
+    ON event
+    FOR EACH ROW
+BEGIN
+    DECLARE conflicting_event_id CHAR(36);
+    DECLARE conflicting_event_name VARCHAR(255);
+    DECLARE conflicting_event_start DATETIME;
+    DECLARE conflicting_event_end DATETIME;
+    DECLARE message_text VARCHAR(255); -- Declare a variable to store the message text
+
+    SELECT id, name, start_date, end_date
+    INTO conflicting_event_id, conflicting_event_name, conflicting_event_start, conflicting_event_end
+    FROM event
+    WHERE location_name = NEW.location_name
+    AND (
+        (NEW.start_date BETWEEN start_date AND end_date)
+        OR (NEW.end_date BETWEEN start_date AND end_date)
+        OR (NEW.start_date <= start_date AND NEW.end_date >= end_date)
+    )
+    LIMIT 1;
+
+    IF conflicting_event_id IS NOT NULL THEN
+        SET message_text = CONCAT(
+            'Event conflict: "', NEW.name, '" overlaps with "', conflicting_event_name,
+            '" at "', NEW.location_name, '". Conflicting event (ID: ', conflicting_event_id,
+            ') starts at "', conflicting_event_start, '" and ends at "', conflicting_event_end, '".'
+        ); -- Build the message text using CONCAT() and assign it to the variable
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = message_text; -- Use the variable in the SIGNAL statement
     END IF;
 END //
 
